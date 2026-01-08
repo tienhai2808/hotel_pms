@@ -1,0 +1,60 @@
+package jwt
+
+import (
+	"fmt"
+	"strconv"
+	"time"
+
+	"github.com/InstayPMS/backend/internal/application/port"
+	"github.com/InstayPMS/backend/pkg/errors"
+	"github.com/golang-jwt/jwt/v5"
+)
+
+type CustomClaims struct {
+	jwt.RegisteredClaims
+	TokenVersion int `json:"token_version"`
+}
+
+type jwtProviderImpl struct {
+	secret string
+}
+
+func NewJWTProvider(secret string) port.JWTProvider {
+	return &jwtProviderImpl{secret}
+}
+
+func (p *jwtProviderImpl) GenerateToken(userID int64, tokenVersion int, ttl time.Duration) (string, error) {
+	claims := CustomClaims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			Subject:   strconv.FormatInt(userID, 10),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ttl)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+		TokenVersion: tokenVersion,
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(p.secret))
+}
+
+func (p *jwtProviderImpl) ParseToken(tokenStr string) (int64, int, error) {
+	claims := &CustomClaims{}
+
+	token, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (any, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("invalid signing method: %v", t.Header["alg"])
+		}
+		return []byte(p.secret), nil
+	})
+
+	if err != nil || !token.Valid {
+		return 0, 0, errors.ErrInvalidToken
+	}
+
+	userID, err := strconv.ParseInt(claims.Subject, 10, 64)
+	if err != nil {
+		return 0, 0, errors.ErrInvalidToken
+	}
+
+	return userID, claims.TokenVersion, nil
+}

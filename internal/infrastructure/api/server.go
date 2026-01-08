@@ -49,7 +49,7 @@ func NewServer(cfg *config.Config) (*Server, error) {
 	)
 
 	api := router.NewRouter(r)
-	api.Setup(cfg.Server.APIPrefix, ctn)
+	api.Setup(cfg.Server, ctn)
 
 	addr := fmt.Sprintf(":%d", cfg.Server.Port)
 

@@ -11,18 +11,18 @@ import (
 	"github.com/redis/go-redis/v9/maintnotifications"
 )
 
-func InitRedis(cfg *config.Config) (*redis.Client, error) {
-	rAddr := cfg.Redis.Host + fmt.Sprintf(":%d", cfg.Redis.Port)
+func InitRedis(cfg config.RedisConfig) (*redis.Client, error) {
+	rAddr := cfg.Host + fmt.Sprintf(":%d", cfg.Port)
 
 	options := &redis.Options{
 		Addr:     rAddr,
-		Password: cfg.Redis.Password,
+		Password: cfg.Password,
 		DB:       0,
 		MaintNotificationsConfig: &maintnotifications.Config{
 			Mode: maintnotifications.ModeDisabled,
 		},
 	}
-	if cfg.Redis.UseSSL {
+	if cfg.UseSSL {
 		options.TLSConfig = &tls.Config{
 			MinVersion: tls.VersionTLS12,
 		}

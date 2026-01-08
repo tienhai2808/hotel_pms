@@ -1,18 +1,68 @@
 package handler
 
 import (
+	"context"
+	"fmt"
+	"net/http"
+	"time"
+
+	"github.com/InstayPMS/backend/internal/application/dto"
 	authUC "github.com/InstayPMS/backend/internal/application/usecase/auth"
+	"github.com/InstayPMS/backend/internal/infrastructure/config"
+	"github.com/InstayPMS/backend/pkg/constants"
+	"github.com/InstayPMS/backend/pkg/mapper"
+	"github.com/InstayPMS/backend/pkg/utils"
+	"github.com/InstayPMS/backend/pkg/validator"
 	"github.com/gin-gonic/gin"
 )
 
 type AuthHandler struct {
+	cfg    *config.Config
 	authUC authUC.AuthUseCase
 }
 
-func NewAuthHandler(authUC authUC.AuthUseCase) *AuthHandler {
-	return &AuthHandler{authUC}
+func NewAuthHandler(
+	cfg *config.Config,
+	authUC authUC.AuthUseCase,
+) *AuthHandler {
+	return &AuthHandler{
+		cfg,
+		authUC,
+	}
 }
 
 func (h *AuthHandler) Login(c *gin.Context) {
-	
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
+	defer cancel()
+
+	var req dto.LoginRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		mess := validator.HandleRequestError(err)
+		utils.BadRequestResponse(c, mess)
+		return
+	}
+
+	user, accessToken, refreshToken, err := h.authUC.Login(ctx, req, c.Request.UserAgent(), c.ClientIP())
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	isSecure := c.Request.TLS != nil || c.GetHeader("X-Forwarded-Proto") == "https"
+	domain := utils.ExtractRootDomain(c.Request.Host)
+
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie(h.cfg.JWT.AccessName, accessToken, int(h.cfg.JWT.AccessExpiresIn.Seconds()), "/", domain, isSecure, true)
+	c.SetCookie(h.cfg.JWT.RefreshName, refreshToken, int(h.cfg.JWT.RefreshExpiresIn.Seconds()), fmt.Sprintf("%s/auth/refresh-token", h.cfg.Server.APIPrefix), domain, isSecure, true)
+
+	utils.APIResponse(
+		c,
+		http.StatusOK,
+		constants.CodeLoginSuccess,
+		constants.SlugLoginSuccess,
+		"Login successfully",
+		gin.H{
+			"user": mapper.ToUserResponse(user),
+		},
+	)
 }

@@ -30,4 +30,5 @@ type User struct {
 	Department *Department `gorm:"foreignKey:DepartmentID;references:ID;constraint:fk_users_department,OnUpdate:CASCADE,OnDelete:RESTRICT" json:"department"`
 	CreatedBy  *User       `gorm:"foreignKey:CreatedByID;references:ID;constraint:fk_users_created_by,OnUpdate:CASCADE,OnDelete:RESTRICT" json:"created_by"`
 	UpdatedBy  *User       `gorm:"foreignKey:UpdatedByID;references:ID;constraint:fk_users_updated_by,OnUpdate:CASCADE,OnDelete:RESTRICT" json:"updated_by"`
+	Tokens     []*Token    `gorm:"foreignKey:UserID;references:ID;constraint:fk_tokens_user,OnUpdate:CASCADE,OnDelete:CASCADE" json:"tokens"`
 }

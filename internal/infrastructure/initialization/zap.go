@@ -9,9 +9,9 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-func InitZap(cfg *config.Config) (*zap.Logger, error) {
+func InitZap(cfg config.LogConfig) (*zap.Logger, error) {
 	level := zapcore.InfoLevel
-	if err := level.UnmarshalText([]byte(cfg.Log.Level)); err != nil {
+	if err := level.UnmarshalText([]byte(cfg.Level)); err != nil {
 		return nil, err
 	}
 
@@ -31,17 +31,17 @@ func InitZap(cfg *config.Config) (*zap.Logger, error) {
 	}
 
 	fileWriter := zapcore.AddSync(&lumberjack.Logger{
-		Filename:   cfg.Log.OutputPath,
-		MaxSize:    cfg.Log.MaxSize,
-		MaxBackups: cfg.Log.MaxBackups,
-		MaxAge:     cfg.Log.MaxAge,
-		Compress:   cfg.Log.Compress,
+		Filename:   cfg.OutputPath,
+		MaxSize:    cfg.MaxSize,
+		MaxBackups: cfg.MaxBackups,
+		MaxAge:     cfg.MaxAge,
+		Compress:   cfg.Compress,
 	})
 
 	consoleWriter := zapcore.AddSync(os.Stdout)
 
 	var encoder zapcore.Encoder
-	if cfg.Log.Encoding == "json" {
+	if cfg.Encoding == "json" {
 		encoder = zapcore.NewJSONEncoder(encoderConfig)
 	} else {
 		encoder = zapcore.NewConsoleEncoder(encoderConfig)

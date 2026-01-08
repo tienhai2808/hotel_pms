@@ -16,4 +16,5 @@ type Department struct {
 	Outlet    *Outlet `gorm:"foreignKey:OutletID;references:ID;constraint:fk_departments_outlet,OnUpdate:CASCADE,OnDelete:RESTRICT" json:"outlet"`
 	CreatedBy *User   `gorm:"foreignKey:CreatedByID;references:ID;constraint:fk_departments_created_by,OnUpdate:CASCADE,OnDelete:RESTRICT" json:"created_by"`
 	UpdatedBy *User   `gorm:"foreignKey:UpdatedByID;references:ID;constraint:fk_departments_updated_by,OnUpdate:CASCADE,OnDelete:RESTRICT" json:"updated_by"`
+	Users     []*User `gorm:"foreignKey:DepartmentID;references:ID;constraint:fk_users_department,OnUpdate:CASCADE,OnDelete:RESTRICT" json:"users"`
 }

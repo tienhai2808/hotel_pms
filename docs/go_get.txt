@@ -19,3 +19,5 @@ go get github.com/go-playground/validator/v10 (Validator)
 go get github.com/redis/go-redis/v9 (Cache)
 
 go get github.com/sony/sonyflake/v2 (Snowflake ID)
+
+go get -u github.com/mssola/useragent (User agent)

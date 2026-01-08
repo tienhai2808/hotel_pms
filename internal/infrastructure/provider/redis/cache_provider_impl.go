@@ -16,12 +16,12 @@ func NewCacheProvider(rdb *redis.Client) port.CacheProvider {
 	return &cacheProviderImpl{rdb}
 }
 
-func (c *cacheProviderImpl) SetString(ctx context.Context, key, str string, ttl time.Duration) error {
-	return c.rdb.Set(ctx, key, str, ttl).Err()
+func (p *cacheProviderImpl) SetString(ctx context.Context, key, str string, ttl time.Duration) error {
+	return p.rdb.Set(ctx, key, str, ttl).Err()
 }
 
-func (c *cacheProviderImpl) GetString(ctx context.Context, key string) (string, error) {
-	str, err := c.rdb.Get(ctx, key).Result()
+func (p *cacheProviderImpl) GetString(ctx context.Context, key string) (string, error) {
+	str, err := p.rdb.Get(ctx, key).Result()
 	if err == redis.Nil {
 		return "", nil
 	} else if err != nil {
@@ -31,12 +31,12 @@ func (c *cacheProviderImpl) GetString(ctx context.Context, key string) (string, 
 	return str, nil
 }
 
-func (c *cacheProviderImpl) SetObject(ctx context.Context, key string, data []byte, ttl time.Duration) error {
-	return c.rdb.Set(ctx, key, data, ttl).Err()
+func (p *cacheProviderImpl) SetObject(ctx context.Context, key string, data []byte, ttl time.Duration) error {
+	return p.rdb.Set(ctx, key, data, ttl).Err()
 }
 
-func (c *cacheProviderImpl) GetObject(ctx context.Context, key string) ([]byte, error) {
-	data, err := c.rdb.Get(ctx, key).Result()
+func (p *cacheProviderImpl) GetObject(ctx context.Context, key string) ([]byte, error) {
+	data, err := p.rdb.Get(ctx, key).Result()
 	if err == redis.Nil {
 		return nil, nil
 	} else if err != nil {
@@ -46,6 +46,21 @@ func (c *cacheProviderImpl) GetObject(ctx context.Context, key string) ([]byte, 
 	return []byte(data), nil
 }
 
-func (c *cacheProviderImpl) Del(ctx context.Context, key string) error {
-	return c.rdb.Del(ctx, key).Err()
+func (p *cacheProviderImpl) Del(ctx context.Context, key string) error {
+	return p.rdb.Del(ctx, key).Err()
+}
+
+func (p *cacheProviderImpl) GetInt(ctx context.Context, key string) (int, error) {
+	num, err := p.rdb.Get(ctx, key).Int()
+	if err == redis.Nil {
+		return 0, nil
+	} else if err != nil {
+		return 0, err
+	}
+
+	return num, nil
+}
+
+func (p *cacheProviderImpl) SetInt(ctx context.Context, key string, num int, ttl time.Duration) error {
+	return p.rdb.Set(ctx, key, num, ttl).Err()
 }

@@ -6,6 +6,6 @@ import (
 )
 
 func (c *Container) initUseCases() {
-	c.FileUC = fileUC.NewFileUseCase(c.Cfg, c.Stor, c.Log)
-	c.AuthUC = authUC.NewAuthUseCase(c.Log, c.IDGen)
+	c.fileUC = fileUC.NewFileUseCase(c.cfg, c.stor, c.log)
+	c.authUC = authUC.NewAuthUseCase(c.cfg.JWT, c.log, c.idGen, c.jwtPro, c.cachePro, c.userRepo, c.tokenRepo)
 }

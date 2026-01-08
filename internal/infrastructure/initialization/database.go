@@ -19,14 +19,14 @@ type Database struct {
 	sql  *sql.DB
 }
 
-func InitDatabase(cfg *config.Config) (*Database, error) {
+func InitDatabase(cfg config.PostgreSQLConfig) (*Database, error) {
 	dsn := fmt.Sprintf(
 		"host=%s dbname=%s user=%s password=%s sslmode=%s",
-		cfg.PostgreSQL.Host,
-		cfg.PostgreSQL.DBName,
-		cfg.PostgreSQL.User,
-		cfg.PostgreSQL.Password,
-		cfg.PostgreSQL.SSLMode,
+		cfg.Host,
+		cfg.DBName,
+		cfg.User,
+		cfg.Password,
+		cfg.SSLMode,
 	)
 
 	newLogger := logger.New(
@@ -71,6 +71,7 @@ var allModels = []any{
 	&model.Outlet{},
 	&model.Department{},
 	&model.User{},
+	&model.Token{},
 }
 
 func runAutoMigrations(db *gorm.DB) error {

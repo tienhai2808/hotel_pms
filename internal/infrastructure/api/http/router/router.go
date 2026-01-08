@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/InstayPMS/backend/internal/container"
+	"github.com/InstayPMS/backend/internal/infrastructure/config"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,8 +18,8 @@ func NewRouter(r *gin.Engine) *Router {
 	}
 }
 
-func (r *Router) Setup(apiPrefix string, ctn *container.Container) {
-	v2 := r.Engine.Group(apiPrefix)
+func (r *Router) Setup(cfg config.ServerConfig, ctn *container.Container) {
+	v2 := r.Engine.Group(cfg.APIPrefix)
 
 	v2.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, "pong")

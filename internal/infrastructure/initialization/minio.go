@@ -6,11 +6,11 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
-func InitMinIO(cfg *config.Config) (*minio.Client, error) {
-	client, err := minio.New(cfg.MinIO.Endpoint, &minio.Options{
-		Creds:  credentials.NewStaticV4(cfg.MinIO.AccessKeyID, cfg.MinIO.SecretAccessKey, ""),
-		Secure: cfg.MinIO.UseSSL,
-		Region: cfg.MinIO.Region,
+func InitMinIO(cfg config.MinIOConfig) (*minio.Client, error) {
+	client, err := minio.New(cfg.Endpoint, &minio.Options{
+		Creds:  credentials.NewStaticV4(cfg.AccessKeyID, cfg.SecretAccessKey, ""),
+		Secure: cfg.UseSSL,
+		Region: cfg.Region,
 	})
 	if err != nil {
 		return nil, err

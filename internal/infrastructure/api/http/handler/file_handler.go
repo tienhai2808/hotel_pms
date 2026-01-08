@@ -28,7 +28,7 @@ func (h *FileHandler) UploadPresignedURLs(c *gin.Context) {
 	var req dto.UploadPresignedURLsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		mess := validator.HandleRequestError(err)
-		utils.APIResponse(c, http.StatusBadRequest, constants.CodeBadRequest, constants.SlugBadRequest, mess, nil)
+		utils.BadRequestResponse(c, mess)
 		return
 	}
 
@@ -57,7 +57,7 @@ func (h *FileHandler) ViewPresignedURLs(c *gin.Context) {
 	var req dto.ViewPresignedURLsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		mess := validator.HandleRequestError(err)
-		utils.APIResponse(c, http.StatusBadRequest, constants.CodeBadRequest, constants.SlugBadRequest, mess, nil)
+		utils.BadRequestResponse(c, mess)
 		return
 	}
 
