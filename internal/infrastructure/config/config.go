@@ -53,4 +53,9 @@ type Config struct {
 		PublicRead      bool   `mapstructure:"public_read"`
 		UseSSL          bool   `mapstructure:"use_ssl"`
 	} `mapstructure:"minio"`
+
+	SuperUser struct {
+		Username string `mapstructure:"username"`
+		Password string `mapstructure:"password"`
+	} `mapstructure:"super_user"`
 }

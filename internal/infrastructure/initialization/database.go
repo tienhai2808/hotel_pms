@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/InstayPMS/backend/internal/domain/model"
 	"github.com/InstayPMS/backend/internal/infrastructure/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -66,7 +67,11 @@ func (d *Database) Close() {
 	_ = d.sql.Close()
 }
 
-var allModels = []any{}
+var allModels = []any{
+	&model.Outlet{},
+	&model.Department{},
+	&model.User{},
+}
 
 func runAutoMigrations(db *gorm.DB) error {
 	return db.AutoMigrate(allModels...)

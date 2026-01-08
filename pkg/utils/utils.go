@@ -7,6 +7,7 @@ import (
 	"github.com/InstayPMS/backend/pkg/constants"
 	"github.com/gin-gonic/gin"
 	"github.com/gosimple/slug"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func APIResponse(c *gin.Context, status, code int, slug, message string, data any) {
@@ -30,4 +31,16 @@ func ISEResponse(c *gin.Context) {
 
 func GenerateSlug(str string) string {
 	return slug.Make(str)
+}
+
+func HashPassword(password string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hash), nil
+}
+
+func VerifyPassword(password, hashedPassword string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }

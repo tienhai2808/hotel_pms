@@ -20,7 +20,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
-    -ldflags="-w -s" 
+    -ldflags="-w -s" \
     -trimpath \
     -o healthcheck ./cmd/healthcheck/healthcheck.go
 
