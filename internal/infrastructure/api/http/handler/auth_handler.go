@@ -8,6 +8,7 @@ import (
 
 	"github.com/InstayPMS/backend/internal/application/dto"
 	authUC "github.com/InstayPMS/backend/internal/application/usecase/auth"
+	"github.com/InstayPMS/backend/internal/infrastructure/api/http/middleware"
 	"github.com/InstayPMS/backend/internal/infrastructure/config"
 	"github.com/InstayPMS/backend/pkg/constants"
 	"github.com/InstayPMS/backend/pkg/errors"
@@ -53,14 +54,82 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	isSecure := c.Request.TLS != nil || c.GetHeader("X-Forwarded-Proto") == "https"
-	domain := utils.ExtractRootDomain(c.Request.Host)
-
-	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie(h.cfg.JWT.AccessName, accessToken, int(h.cfg.JWT.AccessExpiresIn.Seconds()), "/", domain, isSecure, true)
-	c.SetCookie(h.cfg.JWT.RefreshName, refreshToken, int(h.cfg.JWT.RefreshExpiresIn.Seconds()), fmt.Sprintf("%s/auth/refresh-token", h.cfg.Server.APIPrefix), domain, isSecure, true)
+	h.storeTokenInCookie(c, accessToken, refreshToken, int(h.cfg.JWT.AccessExpiresIn), int(h.cfg.JWT.RefreshExpiresIn))
 
 	utils.APIResponse(c, http.StatusOK, constants.CodeLoginSuccess, "Login successfully", gin.H{
 		"user": mapper.ToUserResponse(user),
 	})
+}
+
+func (h *AuthHandler) Logout(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
+	defer cancel()
+
+	userID := c.GetInt64(middleware.CtxUserID)
+	if userID == 0 {
+		c.Error(errors.ErrUnAuth)
+		return
+	}
+
+	accessTTLAny, ok := c.Get(middleware.CtxAccessTTL)
+	if !ok {
+		c.Error(errors.ErrUnAuth)
+		return
+	}
+
+	accessTTL, ok := accessTTLAny.(time.Duration)
+	if !ok {
+		c.Error(errors.ErrUnAuth)
+		return
+	}
+
+	accessToken, err := c.Cookie(h.cfg.JWT.AccessName)
+	if err != nil || accessToken == "" {
+		c.Error(errors.ErrUnAuth)
+		return
+	}
+
+	refreshToken, err := c.Cookie(h.cfg.JWT.RefreshName)
+	if err != nil || refreshToken == "" {
+		c.Error(errors.ErrNoRefreshToken)
+		return
+	}
+
+	if err := h.authUC.Logout(ctx, userID, accessToken, refreshToken, accessTTL); err != nil {
+		c.Error(err)
+		return
+	}
+
+	h.storeTokenInCookie(c, "", "", -1, -1)
+
+	utils.APIResponse(c, http.StatusOK, constants.CodeLogoutSuccess, "Logout successfully", nil)
+}
+
+func (h *AuthHandler) storeTokenInCookie(
+	c *gin.Context,
+	accessToken, refreshToken string,
+	accessExpiresIn, refreshExpiresIn int,
+) {
+	isSecure := c.Request.TLS != nil || c.GetHeader("X-Forwarded-Proto") == "https"
+	domain := utils.ExtractRootDomain(c.Request.Host)
+
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie(
+		h.cfg.JWT.AccessName,
+		accessToken,
+		accessExpiresIn,
+		fmt.Sprintf("%s", h.cfg.Server.APIPrefix),
+		domain,
+		isSecure,
+		true,
+	)
+	c.SetCookie(
+		h.cfg.JWT.RefreshName,
+		refreshToken,
+		refreshExpiresIn,
+		fmt.Sprintf("%s/auth", h.cfg.Server.APIPrefix),
+		domain,
+		isSecure,
+		true,
+	)
 }

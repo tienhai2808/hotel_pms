@@ -5,11 +5,17 @@ const (
 
 	CodeLoginSuccess = 1001
 
+	CodeLogoutSuccess = 1002
+
 	CodeBadRequest = 4000
 
 	CodeLoginFailed = 4001
 
 	CodeInvalidToken = 4002
+
+	CodeUnAuth = 4003
+
+	CodeNoRefreshToken = 4004
 
 	CodeInternalError = 5000
 )

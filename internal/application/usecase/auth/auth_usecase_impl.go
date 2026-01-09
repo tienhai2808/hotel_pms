@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/InstayPMS/backend/internal/application/dto"
@@ -11,7 +11,7 @@ import (
 	"github.com/InstayPMS/backend/internal/domain/model"
 	"github.com/InstayPMS/backend/internal/domain/repository"
 	"github.com/InstayPMS/backend/internal/infrastructure/config"
-	"github.com/InstayPMS/backend/pkg/errors"
+	customErr "github.com/InstayPMS/backend/pkg/errors"
 	"github.com/InstayPMS/backend/pkg/utils"
 	"github.com/sony/sonyflake/v2"
 	"go.uber.org/zap"
@@ -55,18 +55,18 @@ func (u *authUseCaseImpl) Login(ctx context.Context, ua string, req dto.LoginReq
 	}
 
 	if user == nil {
-		return nil, "", "", errors.ErrLoginFailed
+		return nil, "", "", customErr.ErrLoginFailed
 	}
 
 	if !user.IsActive {
-		return nil, "", "", errors.ErrLoginFailed
+		return nil, "", "", customErr.ErrLoginFailed
 	}
 
 	if err = utils.VerifyPassword(req.Password, user.Password); err != nil {
-		return nil, "", "", errors.ErrLoginFailed
+		return nil, "", "", customErr.ErrLoginFailed
 	}
 
-	redisKey := fmt.Sprintf("user_version:%s", strconv.Itoa(int(user.ID)))
+	redisKey := fmt.Sprintf("user_version:%d", user.ID)
 	tokenVersion, err := u.cachePro.GetInt(ctx, redisKey)
 	if err != nil {
 		u.log.Error("get token version failed", zap.Error(err))
@@ -74,7 +74,7 @@ func (u *authUseCaseImpl) Login(ctx context.Context, ua string, req dto.LoginReq
 	}
 
 	if tokenVersion == 0 {
-		if err = u.cachePro.SetInt(ctx, redisKey, 1, 0); err != nil {
+		if err = u.cachePro.SetString(ctx, redisKey, "1", 0); err != nil {
 			u.log.Error("save token version failed", zap.Error(err))
 			return nil, "", "", err
 		}
@@ -87,7 +87,7 @@ func (u *authUseCaseImpl) Login(ctx context.Context, ua string, req dto.LoginReq
 		return nil, "", "", err
 	}
 
-	refreshToken, hashedToken, err := utils.GenerateRefreshToken()
+	refreshToken, err := utils.GenerateRefreshToken()
 	if err != nil {
 		u.log.Error("generate refresh token failed", zap.Error(err))
 		return nil, "", "", err
@@ -102,7 +102,7 @@ func (u *authUseCaseImpl) Login(ctx context.Context, ua string, req dto.LoginReq
 	token := &model.Token{
 		ID:        id,
 		UserID:    user.ID,
-		Token:     hashedToken,
+		Token:     utils.SHA256Hash(refreshToken),
 		UserAgent: utils.ConvertUserAgent(ua),
 		RevokedAt: nil,
 		ExpiresAt: time.Now().Add(u.cfg.RefreshExpiresIn),
@@ -114,4 +114,29 @@ func (u *authUseCaseImpl) Login(ctx context.Context, ua string, req dto.LoginReq
 	}
 
 	return user, accessToken, refreshToken, nil
+}
+
+func (u *authUseCaseImpl) Logout(
+	ctx context.Context,
+	userID int64,
+	accessToken, refreshToken string,
+	accessTTL time.Duration,
+) error {
+	hashedToken := utils.SHA256Hash(refreshToken)
+
+	if err := u.tokenRepo.UpdateByUserIDAndToken(ctx, userID, hashedToken, map[string]any{"revoked_at": time.Now()}); err != nil {
+		if errors.Is(err, customErr.ErrNoRefreshToken) {
+			return err
+		}
+		u.log.Error("update token by user id and token failed", zap.Error(err))
+		return err
+	}
+
+	redisKey := fmt.Sprintf("black_list:%s", accessToken)
+	if err := u.cachePro.SetString(ctx, redisKey, "1", accessTTL); err != nil {
+		u.log.Error("save black list failed", zap.Error(err))
+		return err
+	}
+
+	return nil
 }

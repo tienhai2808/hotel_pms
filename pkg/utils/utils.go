@@ -53,27 +53,20 @@ func VerifyPassword(password, hashedPassword string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 
-func GenerateRefreshToken() (string, string, error) {
+func GenerateRefreshToken() (string, error) {
 	randomBytes := make([]byte, 32)
 	if _, err := rand.Read(randomBytes); err != nil {
-		return "", "", err
+		return "", err
 	}
 
 	rawToken := base64.RawURLEncoding.EncodeToString(randomBytes)
 
-	hash := sha256.New()
-	hash.Write([]byte(rawToken))
-	hashToken := hex.EncodeToString(hash.Sum(nil))
-
-	return rawToken, hashToken, nil
+	return rawToken, nil
 }
 
-func ValidateRefreshToken(rawToken string, storedHash string) bool {
-	hash := sha256.New()
-	hash.Write([]byte(rawToken))
-	computedHash := hex.EncodeToString(hash.Sum(nil))
-
-	return computedHash == storedHash
+func SHA256Hash(str string) string {
+	hashArray := sha256.Sum256([]byte(str))
+	return hex.EncodeToString(hashArray[:])
 }
 
 func ConvertUserAgent(uaReq string) string {

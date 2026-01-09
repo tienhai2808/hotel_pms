@@ -5,6 +5,7 @@ import (
 
 	"github.com/InstayPMS/backend/internal/domain/model"
 	"github.com/InstayPMS/backend/internal/domain/repository"
+	"github.com/InstayPMS/backend/pkg/errors"
 	"gorm.io/gorm"
 )
 
@@ -18,4 +19,25 @@ func NewTokenRepository(db *gorm.DB) repository.TokenRepository {
 
 func (r *tokenRepositoryImpl) Create(ctx context.Context, token *model.Token) error {
 	return r.db.WithContext(ctx).Create(token).Error
+}
+
+func (r *tokenRepositoryImpl) UpdateByUserIDAndToken(
+	ctx context.Context, 
+	userID int64, 
+	token string, 
+	updateData map[string]any,
+) error {
+	result := r.db.WithContext(ctx).
+	Model(&model.Token{}).
+	Where("user_id = ? AND token = ?", userID, token).
+	Updates(updateData)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.ErrNoRefreshToken
+	}
+
+	return nil
 }

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/InstayPMS/backend/internal/application/port"
+	"github.com/InstayPMS/backend/internal/infrastructure/config"
 	"github.com/InstayPMS/backend/pkg/errors"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -16,11 +17,11 @@ type CustomClaims struct {
 }
 
 type jwtProviderImpl struct {
-	secret string
+	cfg config.JWTConfig
 }
 
-func NewJWTProvider(secret string) port.JWTProvider {
-	return &jwtProviderImpl{secret}
+func NewJWTProvider(cfg config.JWTConfig) port.JWTProvider {
+	return &jwtProviderImpl{cfg}
 }
 
 func (p *jwtProviderImpl) GenerateToken(userID int64, tokenVersion int, ttl time.Duration) (string, error) {
@@ -34,27 +35,29 @@ func (p *jwtProviderImpl) GenerateToken(userID int64, tokenVersion int, ttl time
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(p.secret))
+	return token.SignedString([]byte(p.cfg.SecretKey))
 }
 
-func (p *jwtProviderImpl) ParseToken(tokenStr string) (int64, int, error) {
+func (p *jwtProviderImpl) ParseToken(tokenStr string) (int64, int, time.Duration, error) {
 	claims := &CustomClaims{}
 
 	token, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (any, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("invalid signing method: %v", t.Header["alg"])
 		}
-		return []byte(p.secret), nil
+		return []byte(p.cfg.SecretKey), nil
 	})
 
 	if err != nil || !token.Valid {
-		return 0, 0, errors.ErrInvalidToken
+		return 0, 0, 0, errors.ErrInvalidToken
 	}
 
 	userID, err := strconv.ParseInt(claims.Subject, 10, 64)
 	if err != nil {
-		return 0, 0, errors.ErrInvalidToken
+		return 0, 0, 0, errors.ErrInvalidToken
 	}
 
-	return userID, claims.TokenVersion, nil
+	ttl := time.Until(claims.ExpiresAt.Time)
+
+	return userID, claims.TokenVersion, ttl, nil
 }

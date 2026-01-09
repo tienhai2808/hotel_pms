@@ -13,9 +13,7 @@ type Router struct {
 }
 
 func NewRouter(r *gin.Engine) *Router {
-	return &Router{
-		r,
-	}
+	return &Router{r}
 }
 
 func (r *Router) Setup(cfg config.ServerConfig, ctn *container.Container) {
@@ -26,5 +24,5 @@ func (r *Router) Setup(cfg config.ServerConfig, ctn *container.Container) {
 	})
 
 	r.setupFileRoutes(v2, ctn.FileHdl)
-	r.setupAuthRoutes(v2, ctn.AuthHdl)
+	r.setupAuthRoutes(v2, ctn.AuthMid, ctn.AuthHdl)
 }

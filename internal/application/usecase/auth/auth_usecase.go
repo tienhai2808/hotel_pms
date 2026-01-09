@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"time"
 
 	"github.com/InstayPMS/backend/internal/application/dto"
 	"github.com/InstayPMS/backend/internal/domain/model"
@@ -9,4 +10,6 @@ import (
 
 type AuthUseCase interface {
 	Login(ctx context.Context, ua string, req dto.LoginRequest) (*model.User, string, string, error)
+
+	Logout(ctx context.Context, userID int64, accessToken, refreshToken string, accessTTL time.Duration) error
 }

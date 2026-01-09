@@ -60,7 +60,3 @@ func (p *cacheProviderImpl) GetInt(ctx context.Context, key string) (int, error)
 
 	return num, nil
 }
-
-func (p *cacheProviderImpl) SetInt(ctx context.Context, key string, num int, ttl time.Duration) error {
-	return p.rdb.Set(ctx, key, num, ttl).Err()
-}

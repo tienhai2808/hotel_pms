@@ -31,6 +31,7 @@ type Container struct {
 	FileHdl   *handler.FileHandler
 	AuthHdl   *handler.AuthHandler
 	CtxMid    *middleware.ContextMiddleware
+	AuthMid   *middleware.AuthMiddleware
 }
 
 func NewContainer(cfg *config.Config) (*Container, error) {
@@ -38,7 +39,7 @@ func NewContainer(cfg *config.Config) (*Container, error) {
 		cfg: cfg,
 	}
 
-	if err := c.initInfrastructure(cfg); err != nil {
+	if err := c.initInfrastructure(); err != nil {
 		return nil, err
 	}
 

@@ -7,23 +7,15 @@ import (
 )
 
 var (
-	ErrLoginFailed = NewAPIError(
-		http.StatusBadRequest,
-		constants.CodeLoginFailed,
-		"Incorrect username or password",
-	)
+	ErrLoginFailed = NewAPIError(http.StatusBadRequest, constants.CodeLoginFailed, "Incorrect username or password")
 
-	ErrInvalidToken = NewAPIError(
-		http.StatusBadRequest,
-		constants.CodeInvalidToken,
-		"Invalid or expired token",
-	)
+	ErrInvalidToken = NewAPIError(http.StatusBadRequest, constants.CodeInvalidToken, "Invalid or expired token")
 
-	ErrBadRequest = NewAPIError(
-		http.StatusBadRequest,
-		constants.CodeBadRequest,
-		"Invalid data",
-	)
+	ErrBadRequest = NewAPIError(http.StatusBadRequest, constants.CodeBadRequest, "Invalid data")
+
+	ErrUnAuth = NewAPIError(http.StatusUnauthorized, constants.CodeUnAuth, "Unauthorized")
+
+	ErrNoRefreshToken = NewAPIError(http.StatusForbidden, constants.CodeNoRefreshToken, "Please login again")
 )
 
 type APIError struct {

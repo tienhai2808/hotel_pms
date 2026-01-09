@@ -16,7 +16,5 @@ type CacheProvider interface {
 
 	GetString(ctx context.Context, key string) (string, error)
 
-	SetInt(ctx context.Context, key string, num int, ttl time.Duration) error
-
 	GetInt(ctx context.Context, key string) (int, error)
 }
