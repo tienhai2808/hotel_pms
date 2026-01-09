@@ -15,7 +15,7 @@ var (
 
 	ErrUnAuth = NewAPIError(http.StatusUnauthorized, constants.CodeUnAuth, "Unauthorized")
 
-	ErrNoRefreshToken = NewAPIError(http.StatusForbidden, constants.CodeNoRefreshToken, "Please login again")
+	ErrInvalidUser = NewAPIError(http.StatusForbidden, constants.CodeNoRefreshToken, "Please login again")
 )
 
 type APIError struct {

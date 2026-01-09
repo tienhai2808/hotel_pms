@@ -33,6 +33,18 @@ func LoadConfig() (*Config, error) {
 	viper.BindEnv("log.max_age", "LOG_MAX_AGE")
 	viper.BindEnv("log.compress", "LOG_COMPRESS")
 
+	viper.BindEnv("redis.host", "RD_HOST")
+	viper.BindEnv("redis.port", "RD_PORT")
+	viper.BindEnv("redis.password", "RD_PASSWORD")
+	viper.BindEnv("redis.use_ssl", "RD_USE_SSL")
+
+	viper.BindEnv("jwt.access_name", "JWT_ACCESS_NAME")
+	viper.BindEnv("jwt.refresh_name", "JWT_REFRESH_NAME")
+	viper.BindEnv("jwt.guest_name", "JWT_GUEST_NAME")
+	viper.BindEnv("jwt.access_expires_in", "JWT_ACCESS_EXPIRES_IN")
+	viper.BindEnv("jwt.refresh_expires_in", "JWT_REFRESH_EXPIRES_IN")
+	viper.BindEnv("jwt.secret_key", "JWT_SECRET_KEY")
+
 	viper.BindEnv("minio.endpoint", "MIN_ENDPOINT")
 	viper.BindEnv("minio.access_key_id", "MIN_ACCESS_KEY_ID")
 	viper.BindEnv("minio.secret_access_key", "MIN_SECRET_ACCESS_KEY")
@@ -40,6 +52,9 @@ func LoadConfig() (*Config, error) {
 	viper.BindEnv("minio.region", "MIN_REGION")
 	viper.BindEnv("minio.public_read", "MIN_PUBLIC_READ")
 	viper.BindEnv("minio.use_ssl", "MIN_USE_SSL")
+
+	viper.BindEnv("super_user.password", "SU_PASSWORD")
+	viper.BindEnv("super_user.username", "SU_USERNAME")
 
 	viper.AddConfigPath("./configs")
 	viper.SetConfigName("config")

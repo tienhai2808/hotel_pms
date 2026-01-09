@@ -1,8 +1,10 @@
 ROOT := .
 TMP_DIR := tmp
 BIN := $(TMP_DIR)/main
+DOCKERFILE_DIR := .
+ENVFILE_DIR := .env.local
 
-.PHONY: build run clean github
+.PHONY: build run clean github docker-br docker-rm
 
 # Require Ubuntu
 build:
@@ -27,3 +29,13 @@ github:
 	git commit -m "$(CM)"
 	git push
 	git push clone
+
+# Require Docker
+docker-br:
+	docker build -t instay-be $(DOCKERFILE_DIR)
+	docker run --env-file $(ENVFILE_DIR) -d -p 8080:8080 --name instay instay-be
+
+docker-rm:
+	docker stop instay 
+	docker rm instay
+	docker rmi instay-be

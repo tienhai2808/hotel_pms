@@ -109,7 +109,7 @@ func (u *authUseCaseImpl) Login(ctx context.Context, ua string, req dto.LoginReq
 	}
 
 	if err := u.tokenRepo.Create(ctx, token); err != nil {
-		u.log.Error("save token to database failed", zap.Error(err))
+		u.log.Error("create token failed", zap.Error(err))
 		return nil, "", "", err
 	}
 
@@ -125,7 +125,7 @@ func (u *authUseCaseImpl) Logout(
 	hashedToken := utils.SHA256Hash(refreshToken)
 
 	if err := u.tokenRepo.UpdateByUserIDAndToken(ctx, userID, hashedToken, map[string]any{"revoked_at": time.Now()}); err != nil {
-		if errors.Is(err, customErr.ErrNoRefreshToken) {
+		if errors.Is(err, customErr.ErrInvalidUser) {
 			return err
 		}
 		u.log.Error("update token by user id and token failed", zap.Error(err))
@@ -139,4 +139,65 @@ func (u *authUseCaseImpl) Logout(
 	}
 
 	return nil
+}
+
+func (u *authUseCaseImpl) RefreshToken(ctx context.Context, ua, refreshToken string) (string, string, error) {
+	hashedToken := utils.SHA256Hash(refreshToken)
+
+	token, err := u.tokenRepo.FindByToken(ctx, hashedToken)
+	if err != nil {
+		u.log.Error("find token by token failed", zap.Error(err))
+		return "", "", nil
+	}
+
+	if token == nil || token.RevokedAt != nil || token.ExpiresAt.Before(time.Now()) {
+		return "", "", customErr.ErrInvalidUser
+	}
+
+	userID := token.UserID
+
+	redisKey := fmt.Sprintf("user_version:%d", userID)
+	tokenVersion, err := u.cachePro.GetInt(ctx, redisKey)
+	if err != nil {
+		u.log.Error("get token version failed", zap.Error(err))
+		return "", "", err
+	}
+
+	if tokenVersion == 0 {
+		return "", "", customErr.ErrInvalidUser
+	}
+
+	newAccessToken, err := u.jwtPro.GenerateToken(userID, tokenVersion, u.cfg.AccessExpiresIn)
+	if err != nil {
+		u.log.Error("generate access token failed", zap.Error(err))
+		return "", "", err
+	}
+
+	newRefreshToken, err := utils.GenerateRefreshToken()
+	if err != nil {
+		u.log.Error("generate refresh token failed", zap.Error(err))
+		return "", "", err
+	}
+
+	id, err := u.idGen.NextID()
+	if err != nil {
+		u.log.Error("generate token id failed", zap.Error(err))
+		return "", "", err
+	}
+
+	newToken := &model.Token{
+		ID:        id,
+		UserID:    userID,
+		Token:     utils.SHA256Hash(newRefreshToken),
+		UserAgent: utils.ConvertUserAgent(ua),
+		RevokedAt: nil,
+		ExpiresAt: time.Now().Add(u.cfg.RefreshExpiresIn),
+	}
+
+	if err := u.tokenRepo.Create(ctx, newToken); err != nil {
+		u.log.Error("create token failed", zap.Error(err))
+		return "", "", err
+	}
+
+	return newAccessToken, newRefreshToken, nil
 }

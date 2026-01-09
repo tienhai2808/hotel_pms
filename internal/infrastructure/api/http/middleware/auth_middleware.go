@@ -78,8 +78,8 @@ func (m *AuthMiddleware) IsAuthentication() gin.HandlerFunc {
 
 		if str != "" {
 			c.AbortWithStatusJSON(http.StatusForbidden, dto.APIResponse{
-				Code:    errors.ErrNoRefreshToken.Code,
-				Message: errors.ErrNoRefreshToken.Message,
+				Code:    errors.ErrInvalidUser.Code,
+				Message: errors.ErrInvalidUser.Message,
 			})
 			return
 		}
@@ -124,8 +124,8 @@ func (m *AuthMiddleware) AttachTokens() gin.HandlerFunc {
 		refreshToken, err := c.Cookie(m.cfg.RefreshName)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusForbidden, dto.APIResponse{
-				Code:    errors.ErrNoRefreshToken.Code,
-				Message: errors.ErrNoRefreshToken.Message,
+				Code:    errors.ErrInvalidUser.Code,
+				Message: errors.ErrInvalidUser.Message,
 			})
 			return
 		}

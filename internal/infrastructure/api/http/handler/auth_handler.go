@@ -54,7 +54,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	h.storeTokenInCookie(c, accessToken, refreshToken, int(h.cfg.JWT.AccessExpiresIn), int(h.cfg.JWT.RefreshExpiresIn))
+	h.storeTokenInCookie(c, accessToken, refreshToken, int(h.cfg.JWT.AccessExpiresIn.Seconds()), int(h.cfg.JWT.RefreshExpiresIn.Seconds()))
 
 	utils.APIResponse(c, http.StatusOK, constants.CodeLoginSuccess, "Login successfully", gin.H{
 		"user": mapper.ToUserResponse(user),
@@ -91,7 +91,7 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 
 	refreshToken, err := c.Cookie(h.cfg.JWT.RefreshName)
 	if err != nil || refreshToken == "" {
-		c.Error(errors.ErrNoRefreshToken)
+		c.Error(errors.ErrInvalidUser)
 		return
 	}
 
@@ -103,6 +103,27 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 	h.storeTokenInCookie(c, "", "", -1, -1)
 
 	utils.APIResponse(c, http.StatusOK, constants.CodeLogoutSuccess, "Logout successfully", nil)
+}
+
+func (h *AuthHandler) RefreshToken(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
+	defer cancel()
+
+	refreshToken, err := c.Cookie(h.cfg.JWT.RefreshName)
+	if err != nil || refreshToken == "" {
+		c.Error(errors.ErrInvalidUser)
+		return
+	}
+
+	newAccessToken, newRefreshToken, err := h.authUC.RefreshToken(ctx, c.Request.UserAgent(), refreshToken)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	h.storeTokenInCookie(c, newAccessToken, newRefreshToken, int(h.cfg.JWT.AccessExpiresIn.Seconds()), int(h.cfg.JWT.RefreshExpiresIn.Seconds()))
+
+	utils.OKResponse(c, nil)
 }
 
 func (h *AuthHandler) storeTokenInCookie(

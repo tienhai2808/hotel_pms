@@ -2,10 +2,11 @@ package orm
 
 import (
 	"context"
+	"errors"
 
 	"github.com/InstayPMS/backend/internal/domain/model"
 	"github.com/InstayPMS/backend/internal/domain/repository"
-	"github.com/InstayPMS/backend/pkg/errors"
+	customErr "github.com/InstayPMS/backend/pkg/errors"
 	"gorm.io/gorm"
 )
 
@@ -22,22 +23,34 @@ func (r *tokenRepositoryImpl) Create(ctx context.Context, token *model.Token) er
 }
 
 func (r *tokenRepositoryImpl) UpdateByUserIDAndToken(
-	ctx context.Context, 
-	userID int64, 
-	token string, 
+	ctx context.Context,
+	userID int64,
+	token string,
 	updateData map[string]any,
 ) error {
 	result := r.db.WithContext(ctx).
-	Model(&model.Token{}).
-	Where("user_id = ? AND token = ?", userID, token).
-	Updates(updateData)
+		Model(&model.Token{}).
+		Where("user_id = ? AND token = ?", userID, token).
+		Updates(updateData)
 	if result.Error != nil {
 		return result.Error
 	}
 
 	if result.RowsAffected == 0 {
-		return errors.ErrNoRefreshToken
+		return customErr.ErrInvalidUser
 	}
 
 	return nil
+}
+
+func (r *tokenRepositoryImpl) FindByToken(ctx context.Context, hashedToken string) (*model.Token, error) {
+	var token model.Token
+	if err := r.db.WithContext(ctx).Where("token = ?", hashedToken).First(&token).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &token, nil
 }
