@@ -235,7 +235,7 @@ func (u *authUseCaseImpl) ChangePassword(ctx context.Context, userID int64, req 
 		return err
 	}
 
-	if err = u.db.Transaction(func(tx *gorm.DB) error {
+	if err = u.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err = u.userRepo.UpdateTx(tx, userID, map[string]any{"password": hashedPassword}); err != nil {
 			if errors.Is(err, customErr.ErrUserNotFound) {
 				return customErr.ErrInvalidToken
