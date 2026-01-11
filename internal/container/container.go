@@ -6,6 +6,7 @@ import (
 	"github.com/InstayPMS/backend/internal/application/port"
 	authUC "github.com/InstayPMS/backend/internal/application/usecase/auth"
 	fileUC "github.com/InstayPMS/backend/internal/application/usecase/file"
+	userUC "github.com/InstayPMS/backend/internal/application/usecase/user"
 	"github.com/InstayPMS/backend/internal/domain/repository"
 	"github.com/InstayPMS/backend/internal/infrastructure/api/http/handler"
 	"github.com/InstayPMS/backend/internal/infrastructure/api/http/middleware"
@@ -31,10 +32,13 @@ type Container struct {
 	SMTPPro   port.SMTPProvider
 	userRepo  repository.UserRepository
 	tokenRepo repository.TokenRepository
+	deptRepo  repository.DepartmentRepository
 	fileUC    fileUC.FileUseCase
 	authUC    authUC.AuthUseCase
+	userUC    userUC.UserUseCase
 	FileHdl   *handler.FileHandler
 	AuthHdl   *handler.AuthHandler
+	UserHdl   *handler.UserHandler
 	CtxMid    *middleware.ContextMiddleware
 	AuthMid   *middleware.AuthMiddleware
 }

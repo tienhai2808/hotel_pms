@@ -18,6 +18,10 @@ func NewUserRepository(db *gorm.DB) repository.UserRepository {
 	return &userRepositoryImpl{db}
 }
 
+func (r *userRepositoryImpl) Create(ctx context.Context, user *model.User) error {
+	return r.db.WithContext(ctx).Create(user).Error
+}
+
 func (r *userRepositoryImpl) FindByUsernameWithOutletAndDepartment(ctx context.Context, username string) (*model.User, error) {
 	var user model.User
 	if err := r.db.WithContext(ctx).

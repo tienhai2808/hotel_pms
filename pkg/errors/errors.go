@@ -15,6 +15,8 @@ var (
 
 	ErrUnAuth = NewAPIError(http.StatusUnauthorized, constants.CodeUnAuth, "Unauthorized")
 
+	ErrForbidden = NewAPIError(http.StatusForbidden, constants.CodeForbidden, "Forbidden")
+
 	ErrInvalidPassword = NewAPIError(http.StatusBadRequest, constants.CodeInvalidPassword, "Incorrect password")
 
 	ErrInvalidUser = NewAPIError(http.StatusForbidden, constants.CodeNoRefreshToken, "Please login again")
@@ -30,6 +32,14 @@ var (
 	ErrEmailAlreadyExists = NewAPIError(http.StatusConflict, constants.CodeEmailAlreadyExists, "Email already exists")
 
 	ErrPhoneAlreadyExists = NewAPIError(http.StatusConflict, constants.CodePhoneAlreadyExists, "Phone already exists")
+
+	ErrDepartmentNotFound = NewAPIError(http.StatusNotFound, constants.CodeDepartmentNotFound, "Department not found")
+
+	ErrDepartmentDoesNotExistInOutlet = NewAPIError(http.StatusConflict, constants.CodeDepartmentDoesNotExistInOutlet, "Department does not exist in outlet")
+
+	ErrUsernameAlreadyExists = NewAPIError(http.StatusConflict, constants.CodeUsernameAlreadyExists, "Username already exists")
+
+	ErrOutletNotFound = NewAPIError(http.StatusNotFound, constants.CodeOutletNotFound, "Outlet not found")
 )
 
 type APIError struct {

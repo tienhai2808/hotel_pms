@@ -5,44 +5,44 @@ import (
 	"github.com/InstayPMS/backend/internal/domain/model"
 )
 
-func ToSimpleOutletResponse(ol *model.Outlet) *dto.SimpleOutletResponse {
-	if ol == nil {
+func ToSimpleOutletResponse(outlet *model.Outlet) *dto.SimpleOutletResponse {
+	if outlet == nil {
 		return nil
 	}
 
 	return &dto.SimpleOutletResponse{
-		ID:   ol.ID,
-		Name: ol.Name,
+		ID:   outlet.ID,
+		Name: outlet.Name,
 	}
 }
 
-func ToBasicDepartmentResponse(de *model.Department) *dto.BasicDepartmentResponse {
-	if de == nil {
+func ToBasicDepartmentResponse(dept *model.Department) *dto.BasicDepartmentResponse {
+	if dept == nil {
 		return nil
 	}
 
 	return &dto.BasicDepartmentResponse{
-		ID:   de.ID,
-		Name: de.Name,
+		ID:   dept.ID,
+		Name: dept.Name,
 	}
 }
 
-func ToUserResponse(us *model.User) *dto.UserResponse {
-	if us == nil {
+func ToUserResponse(usr *model.User) *dto.UserResponse {
+	if usr == nil {
 		return nil
 	}
 
 	return &dto.UserResponse{
-		ID:         us.ID,
-		Email:      us.Email,
-		Phone:      us.Phone,
-		Username:   us.Username,
-		FirstName:  us.FirstName,
-		LastName:   us.LastName,
-		Role:       us.Role,
-		IsActive:   us.IsActive,
-		CreatedAt:  us.CreatedAt,
-		Outlet:     ToSimpleOutletResponse(us.Outlet),
-		Department: ToBasicDepartmentResponse(us.Department),
+		ID:         usr.ID,
+		Email:      usr.Email,
+		Phone:      usr.Phone,
+		Username:   usr.Username,
+		FirstName:  usr.FirstName,
+		LastName:   usr.LastName,
+		Role:       usr.Role,
+		IsActive:   usr.IsActive,
+		CreatedAt:  usr.CreatedAt,
+		Outlet:     ToSimpleOutletResponse(usr.Outlet),
+		Department: ToBasicDepartmentResponse(usr.Department),
 	}
 }

@@ -8,6 +8,8 @@ import (
 )
 
 type UserRepository interface {
+	Create(ctx context.Context, user *model.User) error
+	
 	FindByUsernameWithOutletAndDepartment(ctx context.Context, username string) (*model.User, error)
 
 	FindByIDWithOutletAndDepartment(ctx context.Context, id int64) (*model.User, error)

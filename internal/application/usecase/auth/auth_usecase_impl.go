@@ -87,7 +87,7 @@ func (u *authUseCaseImpl) Login(ctx context.Context, ua string, req dto.LoginReq
 		tokenVersion = 1
 	}
 
-	accessToken, err := u.jwtPro.GenerateToken(user.ID, tokenVersion, u.cfg.AccessExpiresIn)
+	accessToken, err := u.jwtPro.GenerateToken(user.ID, user.OutletID, user.Role, tokenVersion, u.cfg.AccessExpiresIn)
 	if err != nil {
 		u.log.Error("generate access token failed", zap.Error(err))
 		return nil, "", "", err
@@ -153,9 +153,16 @@ func (u *authUseCaseImpl) RefreshToken(ctx context.Context, ua, refreshToken str
 		return "", "", customErr.ErrInvalidUser
 	}
 
-	userID := token.UserID
+	user, err := u.userRepo.FindByID(ctx, token.UserID)
+	if err != nil {
+		u.log.Error("find user by id failed", zap.Error(err))
+		return "", "", nil
+	}
+	if user == nil || !user.IsActive {
+		return "", "", customErr.ErrInvalidUser
+	}
 
-	redisKey := fmt.Sprintf("user_version:%d", userID)
+	redisKey := fmt.Sprintf("user_version:%d", user.ID)
 	tokenVersion, err := u.cachePro.GetInt(ctx, redisKey)
 	if err != nil {
 		u.log.Error("get token version failed", zap.Error(err))
@@ -165,7 +172,7 @@ func (u *authUseCaseImpl) RefreshToken(ctx context.Context, ua, refreshToken str
 		return "", "", customErr.ErrInvalidUser
 	}
 
-	newAccessToken, err := u.jwtPro.GenerateToken(userID, tokenVersion, u.cfg.AccessExpiresIn)
+	newAccessToken, err := u.jwtPro.GenerateToken(user.ID, user.OutletID, user.Role, tokenVersion, u.cfg.AccessExpiresIn)
 	if err != nil {
 		u.log.Error("generate access token failed", zap.Error(err))
 		return "", "", err
@@ -185,7 +192,7 @@ func (u *authUseCaseImpl) RefreshToken(ctx context.Context, ua, refreshToken str
 
 	newToken := &model.Token{
 		ID:        id,
-		UserID:    userID,
+		UserID:    user.ID,
 		Token:     utils.SHA256Hash(newRefreshToken),
 		UserAgent: utils.ConvertUserAgent(ua),
 		RevokedAt: nil,

@@ -10,5 +10,5 @@ type Token struct {
 	RevokedAt *time.Time `json:"revoked_at"`
 	ExpiresAt time.Time  `gorm:"not null;index:tokens_user_id_user_agent_expires_at_idx,priority:3" json:"expires_at"`
 
-	User *User `gorm:"foreignKey:UserID;references:ID;constraint:fk_tokens_user,OnUpdate:CASCADE,OnDelete:CASCADE" json:"user"`
+	User *User `gorm:"foreignKey:UserID;references:ID;OnUpdate:CASCADE,OnDelete:CASCADE" json:"user"`
 }

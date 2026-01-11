@@ -8,6 +8,7 @@ import (
 
 	"github.com/InstayPMS/backend/internal/application/dto"
 	"github.com/InstayPMS/backend/internal/application/port"
+	"github.com/InstayPMS/backend/internal/domain/model"
 	"github.com/InstayPMS/backend/internal/infrastructure/config"
 	"github.com/InstayPMS/backend/pkg/errors"
 	"github.com/gin-gonic/gin"
@@ -19,6 +20,8 @@ const (
 	CtxAccessToken  = "access_token"
 	CtxRefreshToken = "refresh_token"
 	CtxAccessTTL    = "access_ttl"
+	CtxOutletID     = "outlet_id"
+	CtxRole         = "role"
 )
 
 type AuthMiddleware struct {
@@ -53,7 +56,7 @@ func (m *AuthMiddleware) IsAuthentication() gin.HandlerFunc {
 			return
 		}
 
-		userID, tokenVersion, ttl, err := m.jwtPro.ParseToken(accessToken)
+		userID, outletID, role, tokenVersion, ttl, err := m.jwtPro.ParseToken(accessToken)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, dto.APIResponse{
 				Code:    errors.ErrUnAuth.Code,
@@ -104,6 +107,8 @@ func (m *AuthMiddleware) IsAuthentication() gin.HandlerFunc {
 		}
 
 		c.Set(CtxUserID, userID)
+		c.Set(CtxOutletID, outletID)
+		c.Set(CtxRole, string(role))
 		c.Set(CtxAccessTTL, ttl)
 
 		c.Next()
@@ -132,6 +137,39 @@ func (m *AuthMiddleware) AttachTokens() gin.HandlerFunc {
 
 		c.Set(CtxAccessToken, accessToken)
 		c.Set(CtxRefreshToken, refreshToken)
+
+		c.Next()
+	}
+}
+
+func (m *AuthMiddleware) IsSystemAdministrator() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		outletIDAny, exists := c.Get(CtxOutletID)
+		if !exists {
+			c.AbortWithStatusJSON(http.StatusForbidden, dto.APIResponse{
+				Code:    errors.ErrInvalidUser.Code,
+				Message: errors.ErrInvalidUser.Message,
+			})
+			return
+		}
+
+		outletID, ok := outletIDAny.(*int64)
+		if !ok || outletID != nil {
+			c.AbortWithStatusJSON(http.StatusForbidden, dto.APIResponse{
+				Code:    errors.ErrForbidden.Code,
+				Message: errors.ErrForbidden.Message,
+			})
+			return
+		}
+
+		roleStr := c.GetString(CtxRole)
+		if roleStr == "" || !model.IsValidRole(roleStr) {
+			c.AbortWithStatusJSON(http.StatusForbidden, dto.APIResponse{
+				Code:    errors.ErrForbidden.Code,
+				Message: errors.ErrForbidden.Message,
+			})
+			return
+		}
 
 		c.Next()
 	}

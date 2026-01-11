@@ -1,5 +1,7 @@
 package dto
 
+import "github.com/InstayPMS/backend/internal/domain/model"
+
 type UploadPresignedURLRequest struct {
 	FileName    string `json:"file_name" binding:"required"`
 	ContentType string `json:"content_type" binding:"required"`
@@ -42,4 +44,17 @@ type UpdateInfoRequest struct {
 	Phone     string `json:"phone" binding:"required,len=10"`
 	FirstName string `json:"first_name" binding:"required"`
 	LastName  string `json:"last_name" binding:"required"`
+}
+
+type CreateUserRequest struct {
+	Username     string         `json:"username" binding:"required,min=5"`
+	Email        string         `json:"email" binding:"required,email"`
+	Phone        string         `json:"phone" binding:"required,len=10"`
+	Password     string         `json:"password" binding:"required,min=6"`
+	Role         model.UserRole `json:"role" binding:"required,oneof=staff admin"`
+	IsActive     bool           `json:"is_active" binding:"required"`
+	FirstName    string         `json:"first_name" binding:"required"`
+	LastName     string         `json:"last_name" binding:"required"`
+	OutletID     *int64         `json:"outlet_id" binding:"omitempty"`
+	DepartmentID *int64         `json:"department_id" binding:"omitempty"`
 }

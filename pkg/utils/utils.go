@@ -123,10 +123,12 @@ func IsUniqueViolation(err error) (bool, string) {
 	return false, ""
 }
 
-func IsForeignKeyViolation(err error) bool {
+func IsForeignKeyViolation(err error) (bool, string) {
 	var pgErr *pgconn.PgError
 	if errors.As(err, &pgErr) {
-		return pgErr.Code == "23503"
+		if pgErr.Code == "23503" {
+			return true, pgErr.ConstraintName
+		}
 	}
-	return false
+	return false, ""
 }

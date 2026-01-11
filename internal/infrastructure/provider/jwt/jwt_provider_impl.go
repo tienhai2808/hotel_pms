@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/InstayPMS/backend/internal/application/port"
+	"github.com/InstayPMS/backend/internal/domain/model"
 	"github.com/InstayPMS/backend/internal/infrastructure/config"
 	"github.com/InstayPMS/backend/pkg/errors"
 	"github.com/golang-jwt/jwt/v5"
@@ -13,7 +14,9 @@ import (
 
 type CustomClaims struct {
 	jwt.RegisteredClaims
-	TokenVersion int `json:"token_version"`
+	OutletID     *int64          `json:"outlet_id"`
+	Role         model.UserRole `json:"role"`
+	TokenVersion int            `json:"token_version"`
 }
 
 type jwtProviderImpl struct {
@@ -24,13 +27,15 @@ func NewJWTProvider(cfg config.JWTConfig) port.JWTProvider {
 	return &jwtProviderImpl{cfg}
 }
 
-func (p *jwtProviderImpl) GenerateToken(userID int64, tokenVersion int, ttl time.Duration) (string, error) {
+func (p *jwtProviderImpl) GenerateToken(userID int64, outletID *int64, role model.UserRole, tokenVersion int, ttl time.Duration) (string, error) {
 	claims := CustomClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   strconv.FormatInt(userID, 10),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ttl)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
+		OutletID:     outletID,
+		Role:         role,
 		TokenVersion: tokenVersion,
 	}
 
@@ -38,7 +43,7 @@ func (p *jwtProviderImpl) GenerateToken(userID int64, tokenVersion int, ttl time
 	return token.SignedString([]byte(p.cfg.SecretKey))
 }
 
-func (p *jwtProviderImpl) ParseToken(tokenStr string) (int64, int, time.Duration, error) {
+func (p *jwtProviderImpl) ParseToken(tokenStr string) (int64, *int64, model.UserRole, int, time.Duration, error) {
 	claims := &CustomClaims{}
 
 	token, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (any, error) {
@@ -49,15 +54,15 @@ func (p *jwtProviderImpl) ParseToken(tokenStr string) (int64, int, time.Duration
 	})
 
 	if err != nil || !token.Valid {
-		return 0, 0, 0, errors.ErrInvalidToken
+		return 0, nil, "", 0, 0, errors.ErrInvalidToken
 	}
 
 	userID, err := strconv.ParseInt(claims.Subject, 10, 64)
 	if err != nil {
-		return 0, 0, 0, errors.ErrInvalidToken
+		return 0, nil, "", 0, 0, errors.ErrInvalidToken
 	}
 
 	ttl := time.Until(claims.ExpiresAt.Time)
 
-	return userID, claims.TokenVersion, ttl, nil
+	return userID, claims.OutletID, claims.Role, claims.TokenVersion, ttl, nil
 }

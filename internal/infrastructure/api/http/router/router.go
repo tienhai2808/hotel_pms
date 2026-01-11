@@ -24,5 +24,8 @@ func (r *Router) Setup(cfg config.ServerConfig, ctn *container.Container) {
 	})
 
 	r.setupFileRoutes(v2, ctn.FileHdl)
+
 	r.setupAuthRoutes(v2, ctn.AuthMid, ctn.AuthHdl)
+
+	r.setupUserRoutes(v2, ctn.AuthMid, ctn.UserHdl)
 }

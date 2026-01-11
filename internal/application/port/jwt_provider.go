@@ -1,10 +1,13 @@
 package port
 
-import "time"
+import (
+	"time"
 
+	"github.com/InstayPMS/backend/internal/domain/model"
+)
 
 type JWTProvider interface {
-	GenerateToken(userID int64, tokenVersion int, ttl time.Duration) (string, error)
+	GenerateToken(userID int64, outletID *int64, role model.UserRole, tokenVersion int, ttl time.Duration) (string, error)
 
-	ParseToken(tokenStr string) (int64, int, time.Duration, error)
+	ParseToken(tokenStr string) (int64, *int64, model.UserRole, int, time.Duration, error)
 }

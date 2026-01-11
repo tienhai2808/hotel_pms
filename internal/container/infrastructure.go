@@ -59,6 +59,8 @@ func (c *Container) initInfrastructure() error {
 
 	c.tokenRepo = orm.NewTokenRepository(c.db.Gorm)
 
+	c.deptRepo = orm.NewDepartmentRepository(c.db.Gorm)
+
 	c.CtxMid = middleware.NewContextMiddleware(log)
 
 	c.AuthMid = middleware.NewAuthMiddleware(c.cfg.JWT, c.Log, c.jwtPro, c.cachePro)
