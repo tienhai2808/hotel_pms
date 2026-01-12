@@ -69,3 +69,32 @@ func ToUserDetailsResponse(usr *model.User) *dto.UserDetailsResponse {
 		UpdatedBy:  ToBasicUserResponse(usr.UpdatedBy),
 	}
 }
+
+func ToSimpleUserResponse(usr *model.User) *dto.SimpleUserResponse {
+	if usr == nil {
+		return nil
+	}
+
+	return &dto.SimpleUserResponse{
+		ID:         usr.ID,
+		FirstName:  usr.FirstName,
+		LastName:   usr.LastName,
+		Role:       usr.Role,
+		IsActive:   usr.IsActive,
+		CreatedAt:  usr.CreatedAt,
+		Department: ToBasicDepartmentResponse(usr.Department),
+	}
+}
+
+func ToSimpleUsersResponse(usrs []*model.User) []*dto.SimpleUserResponse {
+	if len(usrs) == 0 {
+		return make([]*dto.SimpleUserResponse, 0)
+	}
+
+	usersRes := make([]*dto.SimpleUserResponse, 0, len(usrs))
+	for _, usr := range usrs {
+		usersRes = append(usersRes, ToSimpleUserResponse(usr))
+	}
+
+	return usersRes
+}

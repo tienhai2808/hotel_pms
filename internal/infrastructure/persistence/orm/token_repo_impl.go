@@ -46,7 +46,9 @@ func (r *tokenRepositoryImpl) UpdateByUserIDTx(tx *gorm.DB, userID int64, update
 
 func (r *tokenRepositoryImpl) FindByToken(ctx context.Context, hashedToken string) (*model.Token, error) {
 	var token model.Token
-	if err := r.db.WithContext(ctx).Where("token = ?", hashedToken).First(&token).Error; err != nil {
+	if err := r.db.WithContext(ctx).
+		Where("token = ?", hashedToken).
+		First(&token).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}

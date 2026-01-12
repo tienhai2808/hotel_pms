@@ -11,6 +11,7 @@ const (
 	CodeUpdateInfoSuccess           = 1007
 	CodeCreateUserSuccess           = 1008
 	CodeCreateDepartmentSuccess     = 1009
+	CodeUpdateUserSuccess           = 1010
 	CodeBadRequest                  = 4000
 	CodeLoginFailed                 = 4001
 	CodeInvalidToken                = 4002
@@ -28,9 +29,13 @@ const (
 	CodeForbidden                   = 4014
 	CodeNameAlreadyExists           = 4015
 	CodeInvalidID                   = 4016
+	CodeNeedAdmin                   = 4017
 	CodeInternalError               = 5000
 
 	ExchangeEmail       = "email.send"
 	QueueNameAuthEmail  = "email.send.auth"
 	RoutingKeyAuthEmail = "email.send.auth"
+
+	RoleAdminDisplayName = "Quản trị viên"
+	RoleStaffDisplayName = "Nhân viên"
 )

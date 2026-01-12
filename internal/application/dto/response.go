@@ -12,6 +12,15 @@ type APIResponse struct {
 	Data    any    `json:"data,omitempty"`
 }
 
+type MetaResponse struct {
+	Total      uint64 `json:"total"`
+	Page       uint32 `json:"page"`
+	Limit      uint32 `json:"limit"`
+	TotalPages uint16 `json:"total_pages"`
+	HasPrev    bool   `json:"has_prev"`
+	HasNext    bool   `json:"has_next"`
+}
+
 type UploadPresignedURLResponse struct {
 	Url string `json:"url"`
 	Key string `json:"key"`
@@ -30,6 +39,16 @@ type UserResponse struct {
 	IsActive   bool                     `json:"is_active"`
 	FirstName  string                   `json:"first_name"`
 	LastName   string                   `json:"last_name"`
+	CreatedAt  time.Time                `json:"created_at"`
+	Department *BasicDepartmentResponse `json:"department"`
+}
+
+type SimpleUserResponse struct {
+	ID         int64                    `json:"id"`
+	FirstName  string                   `json:"first_name"`
+	LastName   string                   `json:"last_name"`
+	Role       model.UserRole           `json:"role"`
+	IsActive   bool                     `json:"is_active"`
 	CreatedAt  time.Time                `json:"created_at"`
 	Department *BasicDepartmentResponse `json:"department"`
 }

@@ -12,7 +12,7 @@ func (c *Container) initUseCases() {
 
 	c.authUC = authUC.NewAuthUseCase(c.cfg.JWT, c.db.Gorm, c.Log, c.idGen, c.jwtPro, c.cachePro, c.MQPro, c.userRepo, c.tokenRepo)
 
-	c.userUC = userUC.NewUserUseCase(c.Log, c.idGen, c.userRepo, c.departmentRepo)
+	c.userUC = userUC.NewUserUseCase(c.db.Gorm, c.Log, c.idGen, c.cachePro, c.userRepo, c.departmentRepo, c.tokenRepo)
 
 	c.departmentUC = departmentUC.NewDepartmentUseCase(c.Log, c.idGen, c.departmentRepo)
 }

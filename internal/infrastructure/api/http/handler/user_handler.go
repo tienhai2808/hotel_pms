@@ -101,5 +101,95 @@ func (h *UserHandler) GetUserByID(c *gin.Context) {
 }
 
 func (h *UserHandler) GetUsers(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
+	defer cancel()
 
+	var query dto.UserPaginationQuery
+	if err := c.ShouldBindQuery(&query); err != nil {
+		field, tag, param := validator.HandleRequestError(err)
+		c.Error(errors.ErrBadRequest.WithData(gin.H{
+			"field": field,
+			"tag":   tag,
+			"param": param,
+		}))
+		return
+	}
+
+	users, meta, err := h.userUC.GetUsers(ctx, query)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	utils.OKResponse(c, gin.H{
+		"users": mapper.ToSimpleUsersResponse(users),
+		"meta":  meta,
+	})
+}
+
+func (h *UserHandler) GetAllRoles(c *gin.Context) {
+	rolesMap := map[string]string{
+		constants.RoleAdminDisplayName: string(model.RoleAdmin),
+		constants.RoleStaffDisplayName: string(model.RoleStaff),
+	}
+
+	utils.OKResponse(c, gin.H{
+		"roles": rolesMap,
+	})
+}
+
+func (h *UserHandler) UpdateUser(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
+	defer cancel()
+
+	userIDStr := c.Param("id")
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		c.Error(errors.ErrInvalidID)
+		return
+	}
+
+	currentUserID := c.GetInt64(middleware.CtxUserID)
+	if currentUserID == 0 {
+		c.Error(errors.ErrUnAuth)
+		return
+	}
+
+	var req dto.UpdateUserRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		field, tag, param := validator.HandleRequestError(err)
+		c.Error(errors.ErrBadRequest.WithData(gin.H{
+			"field": field,
+			"tag":   tag,
+			"param": param,
+		}))
+		return
+	}
+
+	if req.Role == model.RoleAdmin {
+		if req.DepartmentID != nil {
+			c.Error(errors.ErrBadRequest.WithData(gin.H{
+				"field": "departmentid",
+				"tag":   "notrequired",
+				"param": "",
+			}))
+			return
+		}
+	} else {
+		if req.DepartmentID == nil {
+			c.Error(errors.ErrBadRequest.WithData(gin.H{
+				"field": "departmentid",
+				"tag":   "required",
+				"param": "",
+			}))
+			return
+		}
+	}
+
+	if err := h.userUC.UpdateUser(ctx, userID, currentUserID, req); err != nil {
+		c.Error(err)
+		return
+	}
+
+	utils.APIResponse(c, http.StatusOK, constants.CodeUpdateUserSuccess, "User updated successfully", nil)
 }

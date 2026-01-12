@@ -52,7 +52,7 @@ type CreateUserRequest struct {
 	Phone        string         `json:"phone" binding:"required,len=10"`
 	Password     string         `json:"password" binding:"required,min=6"`
 	Role         model.UserRole `json:"role" binding:"required,oneof=staff admin"`
-	IsActive     bool           `json:"is_active" binding:"required"`
+	IsActive     *bool          `json:"is_active" binding:"required"`
 	FirstName    string         `json:"first_name" binding:"required"`
 	LastName     string         `json:"last_name" binding:"required"`
 	DepartmentID *int64         `json:"department_id" binding:"omitempty"`
@@ -63,4 +63,26 @@ type CreateDepartmentRequest struct {
 	Phone       string `json:"phone" binding:"required,max=20"`
 	Description string `json:"description" binding:"required,min=1"`
 	IsActive    bool   `json:"is_active" binding:"required"`
+}
+
+type UserPaginationQuery struct {
+	Page         uint32 `form:"page" binding:"omitempty,min=1" json:"page"`
+	Limit        uint32 `form:"limit" binding:"omitempty,min=1,max=100" json:"limit"`
+	Sort         string `form:"sort" json:"sort"`
+	Order        string `form:"order" binding:"omitempty,oneof=asc desc" json:"order"`
+	Role         string `form:"role" binding:"omitempty,oneof=admin staff" json:"role"`
+	DepartmentID int64  `form:"department_id" binding:"omitempty" json:"department_id"`
+	IsActive     *bool  `form:"is_active" binding:"omitempty" json:"is_active"`
+	Search       string `form:"search" json:"search"`
+}
+
+type UpdateUserRequest struct {
+	Username     string         `json:"username" binding:"required,min=5"`
+	Email        string         `json:"email" binding:"required,email"`
+	Phone        string         `json:"phone" binding:"required,len=10"`
+	FirstName    string         `json:"first_name" binding:"required"`
+	LastName     string         `json:"last_name" binding:"required"`
+	Role         model.UserRole `json:"role" binding:"required,oneof=staff admin"`
+	IsActive     *bool          `json:"is_active" binding:"required"`
+	DepartmentID *int64         `json:"department_id" binding:"omitempty"`
 }

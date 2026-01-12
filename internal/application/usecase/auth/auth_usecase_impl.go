@@ -241,7 +241,12 @@ func (u *authUseCaseImpl) ChangePassword(ctx context.Context, userID int64, req 
 	}
 
 	if err = u.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if err = u.userRepo.UpdateTx(tx, userID, map[string]any{"password": hashedPassword}); err != nil {
+		updateData := map[string]any{
+			"password":      hashedPassword,
+			"updated_by_id": user.ID,
+		}
+
+		if err = u.userRepo.UpdateTx(tx, userID, updateData); err != nil {
 			if errors.Is(err, customErr.ErrUserNotFound) {
 				return customErr.ErrInvalidUser
 			}
@@ -255,7 +260,7 @@ func (u *authUseCaseImpl) ChangePassword(ctx context.Context, userID int64, req 
 		}
 		return nil
 	}); err != nil {
-		return nil
+		return err
 	}
 
 	redisKey := fmt.Sprintf("user_version:%d", user.ID)
@@ -387,7 +392,12 @@ func (u *authUseCaseImpl) ResetPassword(ctx context.Context, req dto.ResetPasswo
 	}
 
 	if err = u.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		if err = u.userRepo.UpdateTx(tx, user.ID, map[string]any{"password": hashedPassword}); err != nil {
+		updateData := map[string]any{
+			"password":      hashedPassword,
+			"updated_by_id": user.ID,
+		}
+
+		if err = u.userRepo.UpdateTx(tx, user.ID, updateData); err != nil {
 			if errors.Is(err, customErr.ErrUserNotFound) {
 				return customErr.ErrUnAuth
 			}
@@ -401,7 +411,7 @@ func (u *authUseCaseImpl) ResetPassword(ctx context.Context, req dto.ResetPasswo
 		}
 		return nil
 	}); err != nil {
-		return nil
+		return err
 	}
 
 	if err = u.cachePro.Del(ctx, redisKey); err != nil {
@@ -418,10 +428,11 @@ func (u *authUseCaseImpl) ResetPassword(ctx context.Context, req dto.ResetPasswo
 
 func (u *authUseCaseImpl) UpdateInfo(ctx context.Context, userID int64, req dto.UpdateInfoRequest) (*model.User, error) {
 	updateData := map[string]any{
-		"email":      req.Email,
-		"phone":      req.Phone,
-		"first_name": req.FirstName,
-		"last_name":  req.LastName,
+		"email":         req.Email,
+		"phone":         req.Phone,
+		"first_name":    req.FirstName,
+		"last_name":     req.LastName,
+		"updated_by_id": userID,
 	}
 
 	if err := u.userRepo.Update(ctx, userID, updateData); err != nil {

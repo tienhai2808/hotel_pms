@@ -132,3 +132,22 @@ func IsForeignKeyViolation(err error) (bool, string) {
 	}
 	return false, ""
 }
+
+func CalculateMeta(total int64, page, limit uint32) *dto.MetaResponse {
+	totalPages := uint32(0)
+	if total > 0 {
+		totalPages = uint32(total) / limit
+		if uint32(total)%limit != 0 {
+			totalPages++
+		}
+	}
+
+	return &dto.MetaResponse{
+		Total:      uint64(total),
+		Page:       page,
+		Limit:      limit,
+		TotalPages: uint16(totalPages),
+		HasPrev:    page > 1,
+		HasNext:    page < totalPages,
+	}
+}

@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 
+	"github.com/InstaySystem/is_v2-be/internal/application/dto"
 	"github.com/InstaySystem/is_v2-be/internal/domain/model"
 	"gorm.io/gorm"
 )
@@ -25,4 +26,8 @@ type UserRepository interface {
 	FindByEmail(ctx context.Context, email string) (*model.User, error)
 
 	Update(ctx context.Context, id int64, updateData map[string]any) error
+
+	FindAllWithDepartmentPaginated(ctx context.Context, query dto.UserPaginationQuery) ([]*model.User, int64, error)
+
+	ExistsActiveAdminExceptID(ctx context.Context, id int64) (bool, error)
 }

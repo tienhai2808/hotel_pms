@@ -15,5 +15,9 @@ func (r *Router) setupUserRoutes(rg *gin.RouterGroup, authMid *middleware.AuthMi
 		user.GET("/:id", hdl.GetUserByID)
 
 		user.GET("", hdl.GetUsers)
+
+		user.GET("/roles", hdl.GetAllRoles)
+
+		user.PUT("/:id", hdl.UpdateUser)
 	}
 }
