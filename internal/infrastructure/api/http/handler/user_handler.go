@@ -80,7 +80,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	utils.APIResponse(c, http.StatusOK, constants.CodeCreateUserSuccess, "User created successfully", gin.H{
+	utils.APIResponse(c, http.StatusCreated, constants.CodeCreateUserSuccess, "User created successfully", gin.H{
 		"user_id": userID,
 	})
 }

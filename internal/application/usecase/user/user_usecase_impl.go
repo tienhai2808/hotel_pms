@@ -88,15 +88,8 @@ func (u *userUseCaseImpl) CreateUser(ctx context.Context, userID int64, req dto.
 				return 0, customErr.ErrPhoneAlreadyExists
 			}
 		}
-		if ok, constraint := utils.IsForeignKeyViolation(err); ok {
-			switch constraint {
-			case "fk_outlets_users":
-				return 0, customErr.ErrOutletNotFound
-			case "fk_users_users_created":
-				return 0, customErr.ErrInvalidUser
-			case "fk_users_user_updated":
-				return 0, customErr.ErrInvalidUser
-			}
+		if ok, _ := utils.IsForeignKeyViolation(err); ok {
+			return 0, customErr.ErrOutletNotFound
 		}
 		u.log.Error("create user failed", zap.Error(err))
 		return 0, err

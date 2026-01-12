@@ -36,6 +36,7 @@ func InitDatabase(cfg config.PostgreSQLConfig) (*Database, error) {
 			LogLevel:                  logger.Warn,
 			IgnoreRecordNotFoundError: true,
 			Colorful:                  false,
+			ParameterizedQueries:      true,
 		},
 	)
 
@@ -75,15 +76,5 @@ var allModels = []any{
 }
 
 func runAutoMigrations(db *gorm.DB) error {
-	oldOption := db.Config.DisableForeignKeyConstraintWhenMigrating
-	db.Config.DisableForeignKeyConstraintWhenMigrating = true
-
-	if err := db.AutoMigrate(allModels...); err != nil {
-		db.Config.DisableForeignKeyConstraintWhenMigrating = oldOption
-		return err
-	}
-
-	db.Config.DisableForeignKeyConstraintWhenMigrating = oldOption
-	
 	return db.AutoMigrate(allModels...)
 }

@@ -13,8 +13,8 @@ type Department struct {
 	CreatedByID *int64    `gorm:"type:bigint" json:"created_by_id"`
 	UpdatedByID *int64    `gorm:"type:bigint" json:"updated_by_id"`
 
-	Outlet    *Outlet `gorm:"foreignKey:OutletID;references:ID;OnUpdate:CASCADE,OnDelete:RESTRICT" json:"outlet"`
-	CreatedBy *User   `gorm:"foreignKey:CreatedByID;references:ID;OnUpdate:CASCADE,OnDelete:RESTRICT" json:"created_by"`
-	UpdatedBy *User   `gorm:"foreignKey:UpdatedByID;references:ID;OnUpdate:CASCADE,OnDelete:RESTRICT" json:"updated_by"`
-	Users     []*User `gorm:"foreignKey:DepartmentID;references:ID" json:"users"`
+	Outlet    *Outlet `gorm:"foreignKey:OutletID;references:ID;constraint:fk_departments_outlet,OnUpdate:CASCADE,OnDelete:RESTRICT" json:"outlet"`
+	CreatedBy *User   `gorm:"foreignKey:CreatedByID;references:ID;constraint:-" json:"created_by"`
+	UpdatedBy *User   `gorm:"foreignKey:UpdatedByID;references:ID;constraint:-" json:"updated_by"`
+	Users     []*User `gorm:"foreignKey:DepartmentID;references:ID;constraint:fk_users_department,OnUpdate:CASCADE,OnDelete:RESTRICT" json:"users"`
 }

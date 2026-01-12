@@ -26,11 +26,11 @@ type User struct {
 	CreatedByID  *int64    `gorm:"type:bigint" json:"created_by_id"`
 	UpdatedByID  *int64    `gorm:"type:bigint" json:"updated_by_id"`
 
-	Outlet             *Outlet       `gorm:"foreignKey:OutletID;references:ID;OnUpdate:CASCADE,OnDelete:RESTRICT" json:"outlet"`
-	Department         *Department   `gorm:"foreignKey:DepartmentID;references:ID;OnUpdate:CASCADE,OnDelete:RESTRICT" json:"department"`
-	CreatedBy          *User         `gorm:"foreignKey:CreatedByID;references:ID;OnUpdate:CASCADE,OnDelete:RESTRICT" json:"created_by"`
-	UpdatedBy          *User         `gorm:"foreignKey:UpdatedByID;references:ID;OnUpdate:CASCADE,OnDelete:RESTRICT" json:"updated_by"`
-	Tokens             []*Token      `gorm:"foreignKey:UserID;references:ID" json:"tokens"`
+	Outlet     *Outlet     `gorm:"foreignKey:OutletID;references:ID;constraint:fk_users_outlet,OnUpdate:CASCADE,OnDelete:RESTRICT" json:"outlet"`
+	Department *Department `gorm:"foreignKey:DepartmentID;references:ID;constraint:fk_users_department,OnUpdate:CASCADE,OnDelete:RESTRICT" json:"department"`
+	CreatedBy  *User       `gorm:"foreignKey:CreatedByID;references:ID;constraint:-" json:"created_by"`
+	UpdatedBy  *User       `gorm:"foreignKey:UpdatedByID;references:ID;constraint:-" json:"updated_by"`
+	Tokens     []*Token    `gorm:"foreignKey:UserID;references:ID;constraint:fk_tokens_user,OnUpdate:CASCADE,OnDelete:CASCADE" json:"tokens"`
 }
 
 func IsValidRole(str string) bool {
