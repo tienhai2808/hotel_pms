@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/InstayPMS/backend/internal/application/dto"
-	"github.com/InstayPMS/backend/pkg/constants"
+	"github.com/InstaySystem/is_v2-be/internal/application/dto"
+	"github.com/InstaySystem/is_v2-be/pkg/constants"
 	"github.com/gin-gonic/gin"
 	"github.com/gosimple/slug"
 	"github.com/jackc/pgx/v5/pgconn"

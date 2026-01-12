@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/InstayPMS/backend/internal/domain/model"
-	"github.com/InstayPMS/backend/internal/infrastructure/config"
+	"github.com/InstaySystem/is_v2-be/internal/domain/model"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

@@ -1,7 +1,7 @@
 package initialization
 
 import (
-	"github.com/InstayPMS/backend/internal/infrastructure/config"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/config"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )

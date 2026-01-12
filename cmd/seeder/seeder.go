@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/InstayPMS/backend/internal/domain/model"
-	"github.com/InstayPMS/backend/internal/infrastructure/config"
-	"github.com/InstayPMS/backend/internal/infrastructure/initialization"
-	"github.com/InstayPMS/backend/pkg/utils"
+	"github.com/InstaySystem/is_v2-be/internal/domain/model"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/config"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/initialization"
+	"github.com/InstaySystem/is_v2-be/pkg/utils"
 	"github.com/sony/sonyflake/v2"
 	"gorm.io/gorm"
 )

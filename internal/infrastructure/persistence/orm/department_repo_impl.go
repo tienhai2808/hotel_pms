@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/InstayPMS/backend/internal/domain/model"
-	"github.com/InstayPMS/backend/internal/domain/repository"
+	"github.com/InstaySystem/is_v2-be/internal/domain/model"
+	"github.com/InstaySystem/is_v2-be/internal/domain/repository"
 	"gorm.io/gorm"
 )
 

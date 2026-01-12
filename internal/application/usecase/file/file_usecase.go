@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 
-	"github.com/InstayPMS/backend/internal/application/dto"
+	"github.com/InstaySystem/is_v2-be/internal/application/dto"
 )
 
 type FileUseCase interface {

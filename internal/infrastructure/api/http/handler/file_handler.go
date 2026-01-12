@@ -4,11 +4,11 @@ import (
 	"context"
 	"time"
 
-	"github.com/InstayPMS/backend/internal/application/dto"
-	fileUC "github.com/InstayPMS/backend/internal/application/usecase/file"
-	"github.com/InstayPMS/backend/pkg/errors"
-	"github.com/InstayPMS/backend/pkg/utils"
-	"github.com/InstayPMS/backend/pkg/validator"
+	"github.com/InstaySystem/is_v2-be/internal/application/dto"
+	fileUC "github.com/InstaySystem/is_v2-be/internal/application/usecase/file"
+	"github.com/InstaySystem/is_v2-be/pkg/errors"
+	"github.com/InstaySystem/is_v2-be/pkg/utils"
+	"github.com/InstaySystem/is_v2-be/pkg/validator"
 	"github.com/gin-gonic/gin"
 )
 

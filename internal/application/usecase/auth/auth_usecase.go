@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/InstayPMS/backend/internal/application/dto"
-	"github.com/InstayPMS/backend/internal/domain/model"
+	"github.com/InstaySystem/is_v2-be/internal/application/dto"
+	"github.com/InstaySystem/is_v2-be/internal/domain/model"
 )
 
 type AuthUseCase interface {

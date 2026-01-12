@@ -3,13 +3,13 @@ package repository
 import (
 	"context"
 
-	"github.com/InstayPMS/backend/internal/domain/model"
+	"github.com/InstaySystem/is_v2-be/internal/domain/model"
 	"gorm.io/gorm"
 )
 
 type UserRepository interface {
 	Create(ctx context.Context, user *model.User) error
-	
+
 	FindByUsernameWithDepartment(ctx context.Context, username string) (*model.User, error)
 
 	FindByIDWithDepartment(ctx context.Context, id int64) (*model.User, error)

@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/InstayPMS/backend/internal/infrastructure/api/http/handler"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/api/http/handler"
 	"github.com/gin-gonic/gin"
 )
 

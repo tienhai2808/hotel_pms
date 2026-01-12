@@ -9,9 +9,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/InstayPMS/backend/internal/container"
-	"github.com/InstayPMS/backend/internal/infrastructure/api/http/router"
-	"github.com/InstayPMS/backend/internal/infrastructure/config"
+	"github.com/InstaySystem/is_v2-be/internal/container"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/api/http/router"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/config"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )

@@ -1,6 +1,6 @@
 package dto
 
-import "github.com/InstayPMS/backend/internal/domain/model"
+import "github.com/InstaySystem/is_v2-be/internal/domain/model"
 
 type UploadPresignedURLRequest struct {
 	FileName    string `json:"file_name" binding:"required"`

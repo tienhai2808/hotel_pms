@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/InstayPMS/backend/internal/infrastructure/config"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/config"
 	"github.com/redis/go-redis/v9"
 	"github.com/redis/go-redis/v9/maintnotifications"
 )

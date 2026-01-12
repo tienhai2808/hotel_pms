@@ -3,7 +3,7 @@ package dto
 import (
 	"time"
 
-	"github.com/InstayPMS/backend/internal/domain/model"
+	"github.com/InstaySystem/is_v2-be/internal/domain/model"
 )
 
 type APIResponse struct {

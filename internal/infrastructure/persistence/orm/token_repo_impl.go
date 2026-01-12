@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/InstayPMS/backend/internal/domain/model"
-	"github.com/InstayPMS/backend/internal/domain/repository"
-	customErr "github.com/InstayPMS/backend/pkg/errors"
+	"github.com/InstaySystem/is_v2-be/internal/domain/model"
+	"github.com/InstaySystem/is_v2-be/internal/domain/repository"
+	customErr "github.com/InstaySystem/is_v2-be/pkg/errors"
 	"gorm.io/gorm"
 )
 

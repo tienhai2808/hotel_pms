@@ -1,10 +1,10 @@
 package container
 
 import (
-	authUC "github.com/InstayPMS/backend/internal/application/usecase/auth"
-	departmentUC "github.com/InstayPMS/backend/internal/application/usecase/department"
-	fileUC "github.com/InstayPMS/backend/internal/application/usecase/file"
-	userUC "github.com/InstayPMS/backend/internal/application/usecase/user"
+	authUC "github.com/InstaySystem/is_v2-be/internal/application/usecase/auth"
+	departmentUC "github.com/InstaySystem/is_v2-be/internal/application/usecase/department"
+	fileUC "github.com/InstaySystem/is_v2-be/internal/application/usecase/file"
+	userUC "github.com/InstaySystem/is_v2-be/internal/application/usecase/user"
 )
 
 func (c *Container) initUseCases() {

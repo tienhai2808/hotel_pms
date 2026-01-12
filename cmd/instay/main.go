@@ -3,10 +3,10 @@ package main
 import (
 	"log"
 
-	"github.com/InstayPMS/backend/internal/container"
-	"github.com/InstayPMS/backend/internal/infrastructure/api"
-	"github.com/InstayPMS/backend/internal/infrastructure/config"
-	"github.com/InstayPMS/backend/internal/infrastructure/worker"
+	"github.com/InstaySystem/is_v2-be/internal/container"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/api"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/config"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/worker"
 )
 
 func main() {

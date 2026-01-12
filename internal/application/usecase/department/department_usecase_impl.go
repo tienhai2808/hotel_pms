@@ -3,11 +3,11 @@ package department
 import (
 	"context"
 
-	"github.com/InstayPMS/backend/internal/application/dto"
-	"github.com/InstayPMS/backend/internal/domain/model"
-	"github.com/InstayPMS/backend/internal/domain/repository"
-	customErr "github.com/InstayPMS/backend/pkg/errors"
-	"github.com/InstayPMS/backend/pkg/utils"
+	"github.com/InstaySystem/is_v2-be/internal/application/dto"
+	"github.com/InstaySystem/is_v2-be/internal/domain/model"
+	"github.com/InstaySystem/is_v2-be/internal/domain/repository"
+	customErr "github.com/InstaySystem/is_v2-be/pkg/errors"
+	"github.com/InstaySystem/is_v2-be/pkg/utils"
 	"github.com/sony/sonyflake/v2"
 	"go.uber.org/zap"
 )

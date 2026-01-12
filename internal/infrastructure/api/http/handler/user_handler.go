@@ -6,15 +6,15 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/InstayPMS/backend/internal/application/dto"
-	userUC "github.com/InstayPMS/backend/internal/application/usecase/user"
-	"github.com/InstayPMS/backend/internal/domain/model"
-	"github.com/InstayPMS/backend/internal/infrastructure/api/http/middleware"
-	"github.com/InstayPMS/backend/pkg/constants"
-	"github.com/InstayPMS/backend/pkg/errors"
-	"github.com/InstayPMS/backend/pkg/mapper"
-	"github.com/InstayPMS/backend/pkg/utils"
-	"github.com/InstayPMS/backend/pkg/validator"
+	"github.com/InstaySystem/is_v2-be/internal/application/dto"
+	userUC "github.com/InstaySystem/is_v2-be/internal/application/usecase/user"
+	"github.com/InstaySystem/is_v2-be/internal/domain/model"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/api/http/middleware"
+	"github.com/InstaySystem/is_v2-be/pkg/constants"
+	"github.com/InstaySystem/is_v2-be/pkg/errors"
+	"github.com/InstaySystem/is_v2-be/pkg/mapper"
+	"github.com/InstaySystem/is_v2-be/pkg/utils"
+	"github.com/InstaySystem/is_v2-be/pkg/validator"
 	"github.com/gin-gonic/gin"
 )
 
@@ -101,5 +101,5 @@ func (h *UserHandler) GetUserByID(c *gin.Context) {
 }
 
 func (h *UserHandler) GetUsers(c *gin.Context) {
-	
+
 }

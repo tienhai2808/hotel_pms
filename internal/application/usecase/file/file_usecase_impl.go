@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/InstayPMS/backend/internal/application/dto"
-	"github.com/InstayPMS/backend/internal/infrastructure/config"
-	"github.com/InstayPMS/backend/pkg/utils"
+	"github.com/InstaySystem/is_v2-be/internal/application/dto"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/config"
+	"github.com/InstaySystem/is_v2-be/pkg/utils"
 	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
 	"go.uber.org/zap"

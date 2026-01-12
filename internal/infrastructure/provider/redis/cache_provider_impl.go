@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/InstayPMS/backend/internal/application/port"
+	"github.com/InstaySystem/is_v2-be/internal/application/port"
 	"github.com/redis/go-redis/v9"
 )
 

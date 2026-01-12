@@ -3,7 +3,7 @@ package initialization
 import (
 	"os"
 
-	"github.com/InstayPMS/backend/internal/infrastructure/config"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"

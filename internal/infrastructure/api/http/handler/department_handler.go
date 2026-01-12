@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/InstayPMS/backend/internal/application/dto"
-	departmentUC "github.com/InstayPMS/backend/internal/application/usecase/department"
-	"github.com/InstayPMS/backend/internal/infrastructure/api/http/middleware"
-	"github.com/InstayPMS/backend/pkg/constants"
-	"github.com/InstayPMS/backend/pkg/errors"
-	"github.com/InstayPMS/backend/pkg/utils"
-	"github.com/InstayPMS/backend/pkg/validator"
+	"github.com/InstaySystem/is_v2-be/internal/application/dto"
+	departmentUC "github.com/InstaySystem/is_v2-be/internal/application/usecase/department"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/api/http/middleware"
+	"github.com/InstaySystem/is_v2-be/pkg/constants"
+	"github.com/InstaySystem/is_v2-be/pkg/errors"
+	"github.com/InstaySystem/is_v2-be/pkg/utils"
+	"github.com/InstaySystem/is_v2-be/pkg/validator"
 	"github.com/gin-gonic/gin"
 )
 

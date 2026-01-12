@@ -3,7 +3,7 @@ package initialization
 import (
 	"fmt"
 
-	"github.com/InstayPMS/backend/internal/infrastructure/config"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/config"
 	"github.com/rabbitmq/amqp091-go"
 )
 

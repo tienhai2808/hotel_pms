@@ -1,13 +1,13 @@
 package container
 
 import (
-	"github.com/InstayPMS/backend/internal/infrastructure/api/http/middleware"
-	"github.com/InstayPMS/backend/internal/infrastructure/initialization"
-	"github.com/InstayPMS/backend/internal/infrastructure/persistence/orm"
-	"github.com/InstayPMS/backend/internal/infrastructure/provider/jwt"
-	"github.com/InstayPMS/backend/internal/infrastructure/provider/rabbitmq"
-	"github.com/InstayPMS/backend/internal/infrastructure/provider/redis"
-	"github.com/InstayPMS/backend/internal/infrastructure/provider/smtp"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/api/http/middleware"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/initialization"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/persistence/orm"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/provider/jwt"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/provider/rabbitmq"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/provider/redis"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/provider/smtp"
 )
 
 func (c *Container) initInfrastructure() error {

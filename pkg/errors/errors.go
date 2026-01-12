@@ -3,7 +3,7 @@ package errors
 import (
 	"net/http"
 
-	"github.com/InstayPMS/backend/pkg/constants"
+	"github.com/InstaySystem/is_v2-be/pkg/constants"
 )
 
 var (

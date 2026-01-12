@@ -3,8 +3,8 @@ package router
 import (
 	"net/http"
 
-	"github.com/InstayPMS/backend/internal/container"
-	"github.com/InstayPMS/backend/internal/infrastructure/config"
+	"github.com/InstaySystem/is_v2-be/internal/container"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/config"
 	"github.com/gin-gonic/gin"
 )
 

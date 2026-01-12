@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"runtime/debug"
 
-	"github.com/InstayPMS/backend/internal/application/dto"
-	"github.com/InstayPMS/backend/pkg/constants"
-	"github.com/InstayPMS/backend/pkg/errors"
-	"github.com/InstayPMS/backend/pkg/utils"
+	"github.com/InstaySystem/is_v2-be/internal/application/dto"
+	"github.com/InstaySystem/is_v2-be/pkg/constants"
+	"github.com/InstaySystem/is_v2-be/pkg/errors"
+	"github.com/InstaySystem/is_v2-be/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )

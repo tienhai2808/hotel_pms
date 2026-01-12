@@ -7,8 +7,8 @@ import (
 	"html/template"
 	"net/smtp"
 
-	"github.com/InstayPMS/backend/internal/application/port"
-	"github.com/InstayPMS/backend/internal/infrastructure/config"
+	"github.com/InstaySystem/is_v2-be/internal/application/port"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/config"
 )
 
 //go:embed templates/auth.html

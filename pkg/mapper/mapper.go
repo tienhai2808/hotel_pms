@@ -1,8 +1,8 @@
 package mapper
 
 import (
-	"github.com/InstayPMS/backend/internal/application/dto"
-	"github.com/InstayPMS/backend/internal/domain/model"
+	"github.com/InstaySystem/is_v2-be/internal/application/dto"
+	"github.com/InstaySystem/is_v2-be/internal/domain/model"
 )
 
 func ToBasicDepartmentResponse(dept *model.Department) *dto.BasicDepartmentResponse {

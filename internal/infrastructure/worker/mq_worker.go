@@ -3,9 +3,9 @@ package worker
 import (
 	"encoding/json"
 
-	"github.com/InstayPMS/backend/internal/application/dto"
-	"github.com/InstayPMS/backend/internal/application/port"
-	"github.com/InstayPMS/backend/pkg/constants"
+	"github.com/InstaySystem/is_v2-be/internal/application/dto"
+	"github.com/InstaySystem/is_v2-be/internal/application/port"
+	"github.com/InstaySystem/is_v2-be/pkg/constants"
 	"go.uber.org/zap"
 )
 
@@ -16,9 +16,9 @@ type MessageQueueWorker struct {
 }
 
 func NewMessageQueueWorker(
-	mq   port.MessageQueueProvider,
+	mq port.MessageQueueProvider,
 	smtp port.SMTPProvider,
-	log  *zap.Logger,
+	log *zap.Logger,
 ) *MessageQueueWorker {
 	return &MessageQueueWorker{
 		mq,

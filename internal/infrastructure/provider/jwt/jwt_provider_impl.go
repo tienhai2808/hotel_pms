@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/InstayPMS/backend/internal/application/port"
-	"github.com/InstayPMS/backend/internal/domain/model"
-	"github.com/InstayPMS/backend/internal/infrastructure/config"
-	"github.com/InstayPMS/backend/pkg/errors"
+	"github.com/InstaySystem/is_v2-be/internal/application/port"
+	"github.com/InstaySystem/is_v2-be/internal/domain/model"
+	"github.com/InstaySystem/is_v2-be/internal/infrastructure/config"
+	"github.com/InstaySystem/is_v2-be/pkg/errors"
 	"github.com/golang-jwt/jwt/v5"
 )
 
