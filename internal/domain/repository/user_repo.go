@@ -14,6 +14,8 @@ type UserRepository interface {
 
 	FindByIDWithOutletAndDepartment(ctx context.Context, id int64) (*model.User, error)
 
+	FindByIDWithDetails(ctx context.Context, id int64) (*model.User, error)
+
 	FindByID(ctx context.Context, id int64) (*model.User, error)
 
 	UpdateTx(tx *gorm.DB, id int64, updateData map[string]any) error

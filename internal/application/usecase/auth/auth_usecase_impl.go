@@ -144,6 +144,9 @@ func (u *authUseCaseImpl) Logout(ctx context.Context, accessToken, refreshToken 
 func (u *authUseCaseImpl) RefreshToken(ctx context.Context, ua, refreshToken string) (string, string, error) {
 	hashedToken := utils.SHA256Hash(refreshToken)
 
+	fmt.Printf("Token gửi lên: %s", refreshToken)
+	fmt.Printf("Token đã hash: %s", hashedToken)
+
 	token, err := u.tokenRepo.FindByToken(ctx, hashedToken)
 	if err != nil {
 		u.log.Error("find token by token failed", zap.Error(err))

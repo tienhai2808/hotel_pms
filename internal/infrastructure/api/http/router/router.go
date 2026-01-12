@@ -28,4 +28,6 @@ func (r *Router) Setup(cfg config.ServerConfig, ctn *container.Container) {
 	r.setupAuthRoutes(v2, ctn.AuthMid, ctn.AuthHdl)
 
 	r.setupUserRoutes(v2, ctn.AuthMid, ctn.UserHdl)
+
+	r.setupOutletRoutes(v2, ctn.AuthMid, ctn.OutletHdl)
 }

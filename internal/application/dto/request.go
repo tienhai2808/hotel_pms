@@ -58,3 +58,10 @@ type CreateUserRequest struct {
 	OutletID     *int64         `json:"outlet_id" binding:"omitempty"`
 	DepartmentID *int64         `json:"department_id" binding:"omitempty"`
 }
+
+type CreateOutletRequest struct {
+	Name        string `json:"name" binding:"required,min=2"`
+	Phone       string `json:"phone" binding:"required,max=20"`
+	Description string `json:"description" binding:"required,min=1"`
+	IsActive    bool   `json:"is_active" binding:"required"`
+}

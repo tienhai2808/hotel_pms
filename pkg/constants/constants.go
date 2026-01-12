@@ -10,6 +10,7 @@ const (
 	CodeResetPasswordSuccess           = 1006
 	CodeUpdateInfoSuccess              = 1007
 	CodeCreateUserSuccess              = 1008
+	CodeCreateOutletSuccess            = 1009
 	CodeBadRequest                     = 4000
 	CodeLoginFailed                    = 4001
 	CodeInvalidToken                   = 4002
@@ -27,6 +28,8 @@ const (
 	CodeUsernameAlreadyExists          = 4014
 	CodeForbidden                      = 4015
 	CodeOutletNotFound                 = 4016
+	CodeNameAlreadyExists              = 4017
+	CodeInvalidID                      = 4018
 	CodeInternalError                  = 5000
 
 	ExchangeEmail       = "email.send"

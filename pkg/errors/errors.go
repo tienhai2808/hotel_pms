@@ -31,9 +31,13 @@ var (
 
 	ErrEmailAlreadyExists = NewAPIError(http.StatusConflict, constants.CodeEmailAlreadyExists, "Email already exists")
 
+	ErrNameAlreadyExists = NewAPIError(http.StatusConflict, constants.CodeNameAlreadyExists, "Name already exists")
+
 	ErrPhoneAlreadyExists = NewAPIError(http.StatusConflict, constants.CodePhoneAlreadyExists, "Phone already exists")
 
 	ErrDepartmentNotFound = NewAPIError(http.StatusNotFound, constants.CodeDepartmentNotFound, "Department not found")
+
+	ErrInvalidID = NewAPIError(http.StatusBadRequest, constants.CodeInvalidID, "Invalid id")
 
 	ErrDepartmentDoesNotExistInOutlet = NewAPIError(http.StatusConflict, constants.CodeDepartmentDoesNotExistInOutlet, "Department does not exist in outlet")
 

@@ -10,6 +10,11 @@ import (
 	"gorm.io/gorm"
 )
 
+type Preload struct {
+	Relation string
+	Scope    func(*gorm.DB) *gorm.DB
+}
+
 type userRepositoryImpl struct {
 	db *gorm.DB
 }
@@ -39,33 +44,23 @@ func (r *userRepositoryImpl) FindByUsernameWithOutletAndDepartment(ctx context.C
 }
 
 func (r *userRepositoryImpl) FindByIDWithOutletAndDepartment(ctx context.Context, id int64) (*model.User, error) {
-	var user model.User
-	if err := r.db.WithContext(ctx).
-		Preload("Outlet").
-		Preload("Department").
-		Where("id = ?", id).
-		First(&user).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
-		return nil, err
-	}
+	return findByIDBase(r.db.WithContext(ctx), id,
+		Preload{Relation: "Outlet"},
+		Preload{Relation: "Department"},
+	)
+}
 
-	return &user, nil
+func (r *userRepositoryImpl) FindByIDWithDetails(ctx context.Context, id int64) (*model.User, error) {
+	return findByIDBase(r.db.WithContext(ctx), id,
+		Preload{Relation: "Outlet"},
+		Preload{Relation: "Department"},
+		Preload{Relation: "CreatedBy"},
+		Preload{Relation: "UpdatedBy"},
+	)
 }
 
 func (r *userRepositoryImpl) FindByID(ctx context.Context, id int64) (*model.User, error) {
-	var user model.User
-	if err := r.db.WithContext(ctx).
-		Where("id = ?", id).
-		First(&user).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
-		return nil, err
-	}
-
-	return &user, nil
+	return findByIDBase(r.db.WithContext(ctx), id)
 }
 
 func (r *userRepositoryImpl) FindByEmail(ctx context.Context, email string) (*model.User, error) {
@@ -119,4 +114,26 @@ func (r *userRepositoryImpl) ExistsByEmail(ctx context.Context, email string) (b
 	}
 
 	return count > 0, nil
+}
+
+func findByIDBase(tx *gorm.DB, id int64, preloads ...Preload) (*model.User, error) {
+	var user model.User
+
+	for _, preload := range preloads {
+		if preload.Scope != nil {
+			tx = tx.Preload(preload.Relation, preload.Scope)
+		} else {
+			tx = tx.Preload(preload.Relation)
+		}
+	}
+
+	if err := tx.Where("id = ?", id).
+		First(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &user, nil
 }

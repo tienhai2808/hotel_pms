@@ -10,5 +10,7 @@ func (r *Router) setupUserRoutes(rg *gin.RouterGroup, authMid *middleware.AuthMi
 	user := rg.Group("/users", authMid.IsAuthentication(), authMid.IsSystemAdministrator())
 	{
 		user.POST("", hdl.CreateUser)
+
+		user.GET("/:id", hdl.GetUserByID)
 	}
 }

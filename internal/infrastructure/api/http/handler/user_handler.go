@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/InstayPMS/backend/internal/application/dto"
@@ -11,6 +12,7 @@ import (
 	"github.com/InstayPMS/backend/internal/infrastructure/api/http/middleware"
 	"github.com/InstayPMS/backend/pkg/constants"
 	"github.com/InstayPMS/backend/pkg/errors"
+	"github.com/InstayPMS/backend/pkg/mapper"
 	"github.com/InstayPMS/backend/pkg/utils"
 	"github.com/InstayPMS/backend/pkg/validator"
 	"github.com/gin-gonic/gin"
@@ -74,13 +76,35 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	userID, err := h.userUC.CreateUser(ctx, userID, req)
+	id, err := h.userUC.CreateUser(ctx, userID, req)
 	if err != nil {
 		c.Error(err)
 		return
 	}
 
 	utils.APIResponse(c, http.StatusCreated, constants.CodeCreateUserSuccess, "User created successfully", gin.H{
-		"user_id": userID,
+		"user_id": id,
+	})
+}
+
+func (h *UserHandler) GetUserByID(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Second)
+	defer cancel()
+
+	userIDStr := c.Param("id")
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		c.Error(errors.ErrInvalidID)
+		return
+	}
+
+	user, err := h.userUC.GetUserByID(ctx, userID)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	utils.OKResponse(c, gin.H{
+		"user": mapper.ToUserDetailsResponse(user),
 	})
 }

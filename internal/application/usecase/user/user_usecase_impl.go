@@ -97,3 +97,16 @@ func (u *userUseCaseImpl) CreateUser(ctx context.Context, userID int64, req dto.
 
 	return id, nil
 }
+
+func (u *userUseCaseImpl) GetUserByID(ctx context.Context, userID int64) (*model.User, error) {
+	user, err := u.userRepo.FindByIDWithDetails(ctx, userID)
+	if err != nil {
+		u.log.Error("find user by id failed", zap.Int64("id", userID), zap.Error(err))
+		return nil, err
+	}
+	if user == nil {
+		return nil, customErr.ErrUserNotFound
+	}
+
+	return user, nil
+}

@@ -8,4 +8,6 @@ func (c *Container) initHandlers() {
 	c.AuthHdl = handler.NewAuthHandler(c.cfg, c.authUC)
 
 	c.UserHdl = handler.NewUserHandler(c.userUC)
+
+	c.OutletHdl = handler.NewOutletHandler(c.outletUC)
 }
