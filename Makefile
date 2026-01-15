@@ -76,7 +76,9 @@ docker-br:
 	docker run --env-file $(ENVFILE_DIR) -d --name $(CONTAINER_CONSUMER) $(IMAGE_NAME) ./consumer
 	docker run --env-file $(ENVFILE_DIR) -d --name $(CONTAINER_SCHEDULER) $(IMAGE_NAME) ./scheduler
 
-docker-rm:
+docker-st:
 	docker stop $(CONTAINER_SERVER)  $(CONTAINER_CONSUMER) $(CONTAINER_SCHEDULER)
+
+docker-rm: docker-st
 	docker rm $(CONTAINER_SERVER)  $(CONTAINER_CONSUMER) $(CONTAINER_SCHEDULER)
 	docker rmi $(IMAGE_NAME)
